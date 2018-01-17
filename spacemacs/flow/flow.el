@@ -22,6 +22,25 @@
 ;;     (init-flowjs)
 ;;
 
+
+(require 'generic-x) ;; we need this
+(defun flowing-mode-config ()
+  "For use in `foo-mode-hook'."
+  (global-set-key (kbd "TAB") 'evil-toggle-fold)
+  ;;(define-key map (kbd [tab]) 'evil-toggle-fold)
+  (hs-minor-mode)
+  )
+
+(define-generic-mode
+    'flowing-mode                         ;; name of the mode to create
+  '("!!")                           ;; comments start with '!!'
+  '("flow" "error" "linting")
+  '(("=" . 'font-lock-operator)     ;; '=' is an operator
+    (";" . 'font-lock-builtin))     ;; ';' is a built-in
+  '("\\.flowing$")                      ;; files for which to activate this mode
+  (list (lambda () (flowing-mode-config)))             ;; other functions to call
+  "A mode for flow js files"            ;; doc string for this mode
+  )
 (defun init-flowjs ()
   ;; Flow integation into flycheck
   ;; https://github.com/bodil/emacs.d/blob/master/bodil/bodil-js.el#L129
