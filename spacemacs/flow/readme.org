@@ -1,0 +1,40 @@
+* Flowjs / spacemacs interation
+
+** Dependencies:
+*** Emacs packages
+  - company-flow
+  - popup.el
+
+Popup.el should already be a dependency in spacemacs default config. For company-flow, manually add in dotspacemasc/layers, eg:
+
+#+begin_src emacs-lisp
+dotspacemacs-additional-packages '(company-flow)
+#+end_src
+
+*** Spacemacs layers:
+  - auto-completion (for company)
+  - syntax-checking (for flycheck)
+  - react for react-mode
+  - javascript for js-mode
+
+*** JS tooling, see example folder:
+  - local flow (partial global support)
+  - local or global eslint with babel-eslint
+
+**  Usage:
+Load this file and call (init-flowjs) from dospacemacs/user-config, eg:
+
+#+begin_src emacs-lisp
+(load-file "~/config/spacemacs/flow.el")
+(init-flowjs)
+#+end_src
+
+**  Usage:
+1. Clone repo, cd into example folder and run npm install to get flow and eslint:
+#+begin_src bash
+git clone git@github.com:tbinetruy/config.git
+cd config/spacemacs/flow/example
+npm install
+#+end_src
+
+2. Reload spacemacs config by restarting it or pressing <SPC> f e R
