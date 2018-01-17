@@ -9,8 +9,8 @@ Experimental flowjs / spacemacs integration because I couldn't find one elsewher
 
 ** Dependencies
 *** Emacs packages
-  - company-flow
-  - popup.el
+  - company-flow [0]
+  - popup.el [1]
 
 Popup.el should already be a dependency in spacemacs default config. For company-flow, manually add in dotspacemasc/layers, eg:
 
