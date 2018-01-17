@@ -22,7 +22,7 @@ dotspacemacs-additional-packages '(company-flow)
   - local or global eslint with babel-eslint
 
 **  Install
-Load flow.el file and call `(init-flowjs)` from dospacemacs/user-config, eg:
+Load flow.el file and call ~(init-flowjs)~ from dospacemacs/user-config, eg:
 
 #+begin_src emacs-lisp
 (load-file "~/config/spacemacs/flow.el")
