@@ -81,6 +81,7 @@
   ;; file in the root directory of this source tree. An additional grant of patent
   ;; rights can be found in the PATENTS file in the same directory.
   ;;
+  ;; source: https://github.com/flowtype/flow-for-emacs
 
   (setq flow_binary "npm run flow -- ")
 

@@ -1,4 +1,11 @@
 * Flowjs / spacemacs integration
+Experimental flowjs / spacemacs integration because I couldn't find one elsewhere. Thanks to these guys:
+
+- https://github.com/flowtype/flow-for-emacs for almost all of the backend code (I had to slightly modify some of it).
+- https://github.com/aaronjensen/company-flow for the integration with company allowing for semantic autocomplete as you type.
+- https://github.com/bodil/emacs.d/blob/master/bodil/bodil-js.el#L129 for the flycheck integration making type linting on file save possible
+- https://github.com/syl20bnr/spacemacs/issues/7119 for all the help in finding where to look
+- and all the others I'm forgetting about
 
 ** Dependencies
 *** Emacs packages
@@ -10,6 +17,10 @@ Popup.el should already be a dependency in spacemacs default config. For company
 #+begin_src emacs-lisp
 dotspacemacs-additional-packages '(company-flow)
 #+end_src
+
+[0] https://github.com/aaronjensen/company-flow
+
+[1] https://github.com/auto-complete/popup-el
 
 *** Spacemacs layers
   - auto-completion (for company)
