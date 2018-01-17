@@ -12,10 +12,15 @@
 ;;    - react for react-mode
 ;;    - javascript for js-mode
 ;;
+;;  - on js tooling, see example folder:
+;;    - local flow (partial global support)
+;;    - local or global eslint with babel-eslint
+;;
 ;; usage:
 ;;   load this file and call (init-flowjs) from dospacemacs/user-config, eg:
-;;     (load-file "./config/spacemacs/flow.el")
+;;     (load-file "~/config/spacemacs/flow.el")
 ;;     (init-flowjs)
+;;
 
 (defun init-flowjs ()
   ;; Flow integation into flycheck
