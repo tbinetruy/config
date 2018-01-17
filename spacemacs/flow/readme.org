@@ -46,13 +46,16 @@ npm install
 Autocomplete is ran through company-flow [0]. If you have the spacemacs auto-completion layer enabled [1], flow suggestions will show up in the Company [2] autocomplete popup.
 
 [0] https://github.com/aaronjensen/company-flow
+
 [1] http://spacemacs.org/layers/+completion/auto-completion/README.html
+
 [2] http://company-mode.github.io/
 
 ** Flow type linting
 Linting is ran through flycheck. As of right now, the only limitation is that flow linting only occurs on file saves (but eslinting still occurs as you type). Installing the syntax-checking spacemacs layer [1] will install flycheck as a dependency.
 
 [0] http://www.flycheck.org/en/latest/
+
 [1] http://spacemacs.org/layers/+checkers/syntax-checking/README.html
 
 
