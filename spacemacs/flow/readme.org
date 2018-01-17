@@ -1,4 +1,4 @@
-* Flowjs / spacemacs interation
+* Flowjs / spacemacs integration
 
 ** Dependencies
 *** Emacs packages
@@ -69,6 +69,18 @@ All keybindings are /preceeded/ by: *<SPC> m f*.
 | d           | def location in new window              |
 | f           | flow status in new window               |
 | s           | flow suggestions in new window          |
+
+
+
+** Screenshots
+
+| action                              | screenshot                                 |
+|-------------------------------------+--------------------------------------------|
+| user defined attribute autocomplete | [[./screenshots/flow-autocomplete-attr.png]]   |
+| js std autocomplete                 | [[./screenshots/flow-autocomplete-js-std.png]] |
+| type linting                        | [[./screenshots/flow-lint-typing.png]]         |
+| type at position                    | [[./screenshots/flow-type-at-pos.png]]         |
+| type of std function                | [[./flow-type-at-pos-js-std.png]]              |
 
 
 
