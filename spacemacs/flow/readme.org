@@ -1,6 +1,6 @@
 * Flowjs / spacemacs interation
 
-** Dependencies:
+** Dependencies
 *** Emacs packages
   - company-flow
   - popup.el
@@ -11,17 +11,17 @@ Popup.el should already be a dependency in spacemacs default config. For company
 dotspacemacs-additional-packages '(company-flow)
 #+end_src
 
-*** Spacemacs layers:
+*** Spacemacs layers
   - auto-completion (for company)
   - syntax-checking (for flycheck)
   - react for react-mode
   - javascript for js2-mode
 
-*** JS tooling, see example folder:
+*** JS tooling, see example folder
   - local flow (partial global support)
   - local or global eslint with babel-eslint
 
-**  Install:
+**  Install
 Load flow.el file and call (init-flowjs) from dospacemacs/user-config, eg:
 
 #+begin_src emacs-lisp
@@ -29,7 +29,7 @@ Load flow.el file and call (init-flowjs) from dospacemacs/user-config, eg:
 (init-flowjs)
 #+end_src
 
-**  Testing:
+**  Testing
 1. Clone repo, cd into example folder and run npm install to get flow and eslint:
 
 #+begin_src bash
@@ -43,7 +43,7 @@ npm install
 3. start react-mode or js2-mode
 
 ** Flow semantic autocomplete
-Autocomplete is ran through company-flow [0]. If you have the spacemacs auto-completion layer enabled [1], flow suggestions will show up in the Company [2] autocomplete popup.
+Autocomplete is ran through /company-flow [0]/. If you have the spacemacs /auto-completion layer [1]/ enabled, flow suggestions will show up in the /company [2]/ autocomplete popup.
 
 [0] https://github.com/aaronjensen/company-flow
 
@@ -52,7 +52,7 @@ Autocomplete is ran through company-flow [0]. If you have the spacemacs auto-com
 [2] http://company-mode.github.io/
 
 ** Flow type linting
-Linting is ran through flycheck. As of right now, the only limitation is that flow linting only occurs on file saves (but eslinting still occurs as you type). Installing the syntax-checking spacemacs layer [1] will install flycheck as a dependency.
+Linting is ran through /flycheck [0]/. As of right now, the only limitation is that flow linting only occurs on file saves (but eslinting still occurs as you type). Installing the spacemacs /syntax-checking layer [1]/ will install flycheck as a dependency.
 
 [0] http://www.flycheck.org/en/latest/
 
@@ -60,7 +60,7 @@ Linting is ran through flycheck. As of right now, the only limitation is that fl
 
 
 ** Key bindings
-All keybindings are preceeded by: *<SPC> m f*.
+All keybindings are /preceeded/ by: *<SPC> m f*.
 
 | key binding | action                                  |
 |-------------+-----------------------------------------|
