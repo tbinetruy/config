@@ -33,25 +33,17 @@ dotspacemacs-additional-packages '(company-flow)
   - local or global eslint with babel-eslint
 
 **  Install
-Load flow.el file and call ~(init-flowjs)~ from dospacemacs/user-config, eg:
+1. Load flow.el file and call ~(init-flowjs)~ from dotspacemacs/user-config, eg:
 
 #+begin_src emacs-lisp
 (load-file "~/config/spacemacs/flow.el")
 (init-flowjs)
 #+end_src
 
-**  Testing
-1. Clone repo, cd into example folder and run npm install to get flow and eslint:
-
-#+begin_src bash
-git clone git@github.com:tbinetruy/config.git
-cd config/spacemacs/flow/example
-npm install
-#+end_src
-
 2. Reload spacemacs config by restarting it or pressing /<SPC> f e R/
 
 3. start react-mode or js2-mode
+
 
 ** Flow semantic autocomplete
 Autocomplete is ran through /company-flow [0]/. If you have the spacemacs /auto-completion layer [1]/ enabled, flow suggestions will show up in the /company [2]/ autocomplete popup.
@@ -81,6 +73,16 @@ All keybindings are /preceeded/ by: *<SPC> m f*.
 | f           | flow status in new window               |
 | s           | flow suggestions in new window          |
 
+
+**  Testing
+Clone repo, cd into example folder and run npm install to get flow and eslint:
+
+#+begin_src bash
+git clone git@github.com:tbinetruy/config.git
+cd config/spacemacs/flow/example
+npm install      # install eslint and flowjs locally
+emacs flow.js    # open flow.js with emacs
+#+end_src
 
 
 ** Screenshots
