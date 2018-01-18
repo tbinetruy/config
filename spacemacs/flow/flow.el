@@ -23,6 +23,8 @@
 ;;
 
 
+;; defining basic mode to diplay npm run flow -- --json
+;; results.
 (require 'generic-x) ;; we need this
 (defun flowing-mode-config ()
   "For use in `foo-mode-hook'."
@@ -34,13 +36,55 @@
 (define-generic-mode
     'flowing-mode                         ;; name of the mode to create
   '("!!")                           ;; comments start with '!!'
-  '("flow" "error" "linting")
+  '("flow" "error" "linting" "Error" "boolean"
+    "This type is incompatible with")
   '(("=" . 'font-lock-operator)     ;; '=' is an operator
     (";" . 'font-lock-builtin))     ;; ';' is a built-in
   '("\\.flowing$")                      ;; files for which to activate this mode
   (list (lambda () (flowing-mode-config)))             ;; other functions to call
   "A mode for flow js files"            ;; doc string for this mode
   )
+
+(defun print-flow-status-error (e)
+  (mapcar
+   (lambda (err)
+     (format " %s  "
+             (mapcar
+              (lambda (y)
+                (format "\n %s: %s %s \n %s (l. %s, c. %s) \n"
+                        (cdr (assoc 'type y))
+                        (cdr (assoc 'descr y))
+                        (cdr (assoc 'context y))
+                        (cdr (assoc 'source
+                                    (cdr (assoc 'loc y))))
+                        (cdr (assoc 'line
+                                    (cdr (assoc 'start
+                                                (cdr (assoc 'loc y))))))
+                        (cdr (assoc 'column
+                                    (cdr (assoc 'start
+                                                (cdr (assoc 'loc y))))))
+                        ))
+              (cdr (assoc 'message err)))))
+   e))
+  ;;(mapc (lambda (m) (format "hello %s" m)) (assoc 'message e)))
+
+;; create new window and show flow status in it
+(defun create-flow-status-window (json)
+    (interactive)
+    ;;(split-window-right)
+    ;;(get-buffer-create "flowing-status")
+    (let ((file (buffer-file-name))
+          (region (string-of-region))
+          (buffer (current-buffer)))
+      (switch-to-buffer-other-window "*Flowing status*")
+      (erase-buffer)
+      (insert (format "%s" (print-flow-status-error
+                      (cdr (assoc 'errors
+                      (json-read-from-string
+                        json)))))))
+      (flowing-mode))
+
+
 (defun init-flowjs ()
   ;; Flow integation into flycheck
   ;; https://github.com/bodil/emacs.d/blob/master/bodil/bodil-js.el#L129
@@ -102,7 +146,7 @@
   ;;
   ;; source: https://github.com/flowtype/flow-for-emacs
 
-  (setq flow_binary "npm run flow -- ")
+  (setq flow_binary "npm run -s flow -- ")
 
   (defun column-number-at-pos (pos)
     "column number at pos"
@@ -143,7 +187,9 @@
   (defun flow-status ()
     "Initialize flow"
     (interactive)
-    (compile (format "%s status --from emacs; exit 0" flow_binary))
+    (create-flow-status-window
+    (shell-command-to-string
+     (format "npm run -s flow -- status --json")))
   )
 
   (global-set-key (kbd "C-x C-m") 'flow-status)
