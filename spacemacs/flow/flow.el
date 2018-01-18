@@ -28,9 +28,8 @@
 (require 'generic-x) ;; we need this
 (defun flowing-mode-config ()
   "For use in `foo-mode-hook'."
-  (global-set-key (kbd "TAB") 'evil-toggle-fold)
   ;;(define-key map (kbd [tab]) 'evil-toggle-fold)
-  (hs-minor-mode)
+  (outline-minor-mode)
   )
 
 (define-generic-mode
@@ -54,34 +53,28 @@
 (defun print-flow-status-error (e)
   (mapcar
    (lambda (err)
-     (concat "\n  (\n" (replace-regexp-in-string "(\\|)" "" (format "%s \n%s \n %s"
+             (insert (format "\n*** File error "))
+             (insert "\n")
              (mapcar
               (lambda (y)
-                (format "    %s : %s "
-                        (cdr (assoc 'type y))
-                        (cdr (assoc 'descr y))
-                        ))
+                (insert (propertize (format "%s " (cdr (assoc 'descr y))) 'font-lock-face '(:foreground "red"))))
               (cdr (assoc 'message err)))
-              (mapcar
-               (lambda (y)
-                 (format "    %s"
-                         (cdr (assoc 'context y))
-                         ))
-              (cdr (assoc 'message err)))
+             (insert "\n")
              (mapcar
               (lambda (y)
-                (format "   source:  %s, l. %s, c. %s \n"
-                      (cdr (assoc 'source
-                                  (cdr (assoc 'loc y))))
-                      (cdr (assoc 'line
-                                  (cdr (assoc 'start
-                                              (cdr (assoc 'loc y))))))
-                      (cdr (assoc 'column
-                                  (cdr (assoc 'start
-                                              (cdr (assoc 'loc y))))))
-                        ))
+                (insert (propertize (format "%s " (cdr (assoc 'context y))) 'font-lock-face '(:foreground "red"))))
               (cdr (assoc 'message err)))
-             )) "\n  )\n"))
+             (insert "\n")
+             (mapcar
+              (lambda (y)
+                (insert (propertize (format "%s "
+                                            (cdr (assoc 'source (cdr (assoc 'loc y))))) 'font-lock-face '(:foreground "red")))
+                (insert (propertize (format "%s "
+                                            (cdr (assoc 'start (cdr (assoc 'start (cdr (assoc 'loc y))))))) 'font-lock-face '(:foreground "red")))
+                (insert (propertize (format "%s "
+                                            (cdr (assoc 'end (cdr (assoc 'start (cdr (assoc 'loc y))))))) 'font-lock-face '(:foreground "red"))))
+              (cdr (assoc 'message err)))
+            (insert "\n"))
    e))
   ;;(mapc (lambda (m) (format "hello %s" m)) (assoc 'message e)))
 
@@ -89,19 +82,17 @@
 (defun create-flow-status-window (json)
     (interactive)
     ;;(split-window-right)
-    ;;(get-buffer-create "flowing-status")
     (let ((file (buffer-file-name))
           (region (string-of-region))
           (buffer (current-buffer)))
       (switch-to-buffer-other-window "*Flowing status*")
       (erase-buffer)
-      (insert "flow status window \n\n\n")
-      (insert "Errors (tab over section to toggle): \n\n")
-      (insert (format "%s" (print-flow-status-error
-                      (cdr (assoc 'errors
+      (insert "* flow status window \n\n\n")
+      (insert "** Errors (tab over section to toggle): \n")
+      (print-flow-status-error (cdr (assoc 'errors
                       (json-read-from-string
-                        json)))))))
-      (flowing-mode))
+                        json)))))
+      (outline-mode))
 
 
 (defun init-flowjs ()
