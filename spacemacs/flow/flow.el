@@ -54,24 +54,23 @@
 (defun print-flow-status-error (e)
   (mapcar
    (lambda (err)
-     (concat "\n(\n" (replace-regexp-in-string "(\\|)" "" (format "%s \n %s \n %s"
+     (concat "\n  (\n" (replace-regexp-in-string "(\\|)" "" (format "%s \n%s \n %s"
              (mapcar
               (lambda (y)
-                (format "%s : %s "
+                (format "    %s : %s "
                         (cdr (assoc 'type y))
                         (cdr (assoc 'descr y))
                         ))
               (cdr (assoc 'message err)))
               (mapcar
                (lambda (y)
-                 (format "%s"
+                 (format "    %s"
                          (cdr (assoc 'context y))
                          ))
               (cdr (assoc 'message err)))
              (mapcar
               (lambda (y)
-                ;;               (format "\n %s: %s \n %s (l. %s, c. %s) \n\n"
-                (format "source:  %s, l. %s, c. %s \n "
+                (format "   source:  %s, l. %s, c. %s \n"
                       (cdr (assoc 'source
                                   (cdr (assoc 'loc y))))
                       (cdr (assoc 'line
@@ -82,7 +81,7 @@
                                               (cdr (assoc 'loc y))))))
                         ))
               (cdr (assoc 'message err)))
-             )) "\n)"))
+             )) "\n  )\n"))
    e))
   ;;(mapc (lambda (m) (format "hello %s" m)) (assoc 'message e)))
 
@@ -96,6 +95,8 @@
           (buffer (current-buffer)))
       (switch-to-buffer-other-window "*Flowing status*")
       (erase-buffer)
+      (insert "flow status window \n\n\n")
+      (insert "Errors (tab over section to toggle): \n\n")
       (insert (format "%s" (print-flow-status-error
                       (cdr (assoc 'errors
                       (json-read-from-string
