@@ -45,26 +45,44 @@
   "A mode for flow js files"            ;; doc string for this mode
   )
 
+(defun print-elements-of-list (list)
+  "Print each element of LIST on a line of its own."
+  (while list
+    (print (car list))
+    (setq list (cdr list))))
+
 (defun print-flow-status-error (e)
   (mapcar
    (lambda (err)
-     (format " %s  "
+     (concat "\n(\n" (replace-regexp-in-string "(\\|)" "" (format "%s \n %s \n %s"
              (mapcar
               (lambda (y)
-                (format "\n %s: %s %s \n %s (l. %s, c. %s) \n"
+                (format "%s : %s "
                         (cdr (assoc 'type y))
                         (cdr (assoc 'descr y))
-                        (cdr (assoc 'context y))
-                        (cdr (assoc 'source
-                                    (cdr (assoc 'loc y))))
-                        (cdr (assoc 'line
-                                    (cdr (assoc 'start
-                                                (cdr (assoc 'loc y))))))
-                        (cdr (assoc 'column
-                                    (cdr (assoc 'start
-                                                (cdr (assoc 'loc y))))))
                         ))
-              (cdr (assoc 'message err)))))
+              (cdr (assoc 'message err)))
+              (mapcar
+               (lambda (y)
+                 (format "%s"
+                         (cdr (assoc 'context y))
+                         ))
+              (cdr (assoc 'message err)))
+             (mapcar
+              (lambda (y)
+                ;;               (format "\n %s: %s \n %s (l. %s, c. %s) \n\n"
+                (format "source:  %s, l. %s, c. %s \n "
+                      (cdr (assoc 'source
+                                  (cdr (assoc 'loc y))))
+                      (cdr (assoc 'line
+                                  (cdr (assoc 'start
+                                              (cdr (assoc 'loc y))))))
+                      (cdr (assoc 'column
+                                  (cdr (assoc 'start
+                                              (cdr (assoc 'loc y))))))
+                        ))
+              (cdr (assoc 'message err)))
+             )) "\n)"))
    e))
   ;;(mapc (lambda (m) (format "hello %s" m)) (assoc 'message e)))
 
