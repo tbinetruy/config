@@ -87,13 +87,14 @@ emacs flow.js    # open flow.js with emacs
 
 ** Screenshots
 
-| action                              | screenshot                                 |
-|-------------------------------------+--------------------------------------------|
-| user defined attribute autocomplete | [[./screenshots/flow-autocomplete-attr.png]]   |
-| js std autocomplete                 | [[./screenshots/flow-autocomplete-js-std.png]] |
-| type linting                        | [[./screenshots/flow-lint-typing.png]]         |
-| type at position                    | [[./screenshots/flow-type-at-pos.png]]         |
-| type of std function                | [[./screenshots/flow-type-at-pos-js-std.png]]  |
+| action                                | screenshot                                 |
+|---------------------------------------+--------------------------------------------|
+| user defined attribute autocomplete   | [[./screenshots/flow-autocomplete-attr.png]]   |
+| js std autocomplete                   | [[./screenshots/flow-autocomplete-js-std.png]] |
+| type linting                          | [[./screenshots/flow-lint-typing.png]]         |
+| type at position                      | [[./screenshots/flow-type-at-pos.png]]         |
+| type of std function                  | [[./screenshots/flow-type-at-pos-js-std.png]]  |
+| Flow status on project (experimental) | [[./screenshots/flow-status-proto.png]]        |
 
 
 
