@@ -21,6 +21,8 @@
 ;;     (load-file "~/config/spacemacs/flow.el")
 ;;     (init-flowjs)
 ;;
+;;  add (spacemacs/add-flycheck-hook 'rjsx-mode) in user-init() to
+;;  get rjsx-mode linter support
 
 
 ;; defining basic mode to diplay npm run flow -- --json
@@ -137,7 +139,7 @@
     "Static type checking using Flow."
     :command ("flow" "--json")
     :error-parser flycheck-parse-flow
-    :modes (react-mode js2-mode)
+    :modes (react-mode js2-mode rjsx-mode)
     :next-checkers ((error . javascript-eslint))
     )
   (add-to-list 'flycheck-checkers 'javascript-flow)
@@ -156,6 +158,7 @@
       (setq-local flycheck-javascript-flow-executable flow)))
 
   (add-hook 'react-mode-hook #'spacemacs//react-use-flow-from-node-modules)
+  (add-hook 'js2-mode-hook #'spacemacs//react-use-flow-from-node-modules)
   (add-hook 'js2-mode-hook #'spacemacs//react-use-flow-from-node-modules)
 
 
@@ -215,9 +218,9 @@
      (format "npm run -s flow -- status --json")))
   )
 
-  (global-set-key (kbd "C-x C-m") 'flow-status)
   (spacemacs/set-leader-keys-for-major-mode 'react-mode "ff" 'flow-status)
   (spacemacs/set-leader-keys-for-major-mode 'js2-mode "ff" 'flow-status)
+  (spacemacs/set-leader-keys-for-major-mode 'rjsx-mode "ff" 'flow-status)
 
   (require 'popup)
   ;; futur pretty print version of flow-type-at-pos using regex
@@ -250,6 +253,7 @@
 
   (spacemacs/set-leader-keys-for-major-mode 'react-mode "fp" 'flow-type-at-pos-pp)
   (spacemacs/set-leader-keys-for-major-mode 'js2-mode "fp" 'flow-type-at-pos-pp)
+  (spacemacs/set-leader-keys-for-major-mode 'rjsx-mode "fp" 'flow-type-at-pos-pp)
 
   ;; uses popup.el to display type at pos
   (defun flow-type-at-pos ()
@@ -280,6 +284,7 @@
 
   (spacemacs/set-leader-keys-for-major-mode 'react-mode "ft" 'flow-type-at-pos)
   (spacemacs/set-leader-keys-for-major-mode 'js2-mode "ft" 'flow-type-at-pos)
+  (spacemacs/set-leader-keys-for-major-mode 'rjsx-mode "ft" 'flow-type-at-pos)
 
   (defun flow-suggest ()
     "fill types"
@@ -300,6 +305,7 @@
   (global-set-key (kbd "C-t") 'flow-suggest)
   (spacemacs/set-leader-keys-for-major-mode 'react-mode "fs" 'flow-suggest)
   (spacemacs/set-leader-keys-for-major-mode 'js2-mode "fs" 'flow-suggest)
+  (spacemacs/set-leader-keys-for-major-mode 'rjsx-mode "fs" 'flow-suggest)
 
   (defun flow-get-def ()
     "jump to definition"
@@ -325,6 +331,7 @@
 
   (spacemacs/set-leader-keys-for-major-mode 'react-mode "fd" 'flow-get-def)
   (spacemacs/set-leader-keys-for-major-mode 'js2-mode "fd" 'flow-get-def)
+  (spacemacs/set-leader-keys-for-major-mode 'rjsx-mode "fd" 'flow-get-def)
 
   ;; raw flow autocomplete suggestions at pos
   (defun flow-autocomplete ()
@@ -353,6 +360,7 @@
 
   (spacemacs/set-leader-keys-for-major-mode 'react-mode "fa" 'flow-autocomplete)
   (spacemacs/set-leader-keys-for-major-mode 'js2-mode "fa" 'flow-autocomplete)
+  (spacemacs/set-leader-keys-for-major-mode 'rjsx-mode "fa" 'flow-autocomplete)
 
   (add-hook 'kill-emacs-hook
     (lambda ()
@@ -367,9 +375,13 @@
     (setq company-backends-js2-mode '(company-flow company-tern
                                                    (company-dabbrev-code company-gtags company-etags company-keywords)
                                                    company-files company-dabbrev))
+    (setq company-backends-js2-mode '(company-flow company-tern
+                                                   (company-dabbrev-code company-gtags company-etags company-keywords)
+                                                   company-files company-dabbrev))
     (setq company-backends-react-mode '(company-flow company-tern
                                                      (company-dabbrev-code company-gtags company-etags company-keywords)
                                                      company-files company-dabbrev)))
 
   (add-hook 'js-mode-hook 'company-force-flow)
+  (add-hook 'rjsx-mode-hook 'company-force-flow)
   (add-hook 'react-mode-hook 'company-force-flow))
