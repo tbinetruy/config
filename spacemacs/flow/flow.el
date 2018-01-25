@@ -66,28 +66,31 @@
                     (insert (propertize (format "%s " (cdr (assoc 'descr y))) 'font-lock-face '(:foreground "orange")))
                     ))
               (cdr (assoc 'message err)))
+             (insert "\n\n\n")
+              (defun format-context-descr (y s)
+                  (insert (propertize
+                            (format "        error %s: %s (%s)\n"
+                                    s
+                                    (cdr (assoc 'context y))
+                                    (cdr (assoc 'descr y)))
+                              'font-lock-face '(:foreground "white"))))
+              (format-context-descr (svref (cdr (assoc 'message err)) 0) "start")
+              (format-context-descr (svref (cdr (assoc 'message err)) 2) "end")
              (insert "\n\n")
-             (mapcar
-              (lambda (y)
-                (if (equal (format "%s" (cdr (assoc 'type y))) "Blame")
-                  (insert (propertize (format "        error start: %s (%s)\n" (cdr (assoc 'context y)) (cdr (assoc 'descr y))) 'font-lock-face '(:foreground "white")))))
-              (cdr (assoc 'message err)))
-             (insert "\n\n")
-             (mapcar
-              (lambda (y)
-                (if (equal (format "%s" (cdr (assoc 'type y))) "Blame")
-                    ((lambda ()
-                      (insert (propertize (format "    path: \n        %s\n         "
-                                            (cdr (assoc 'source (cdr (assoc 'loc y))))) 'font-lock-face '(:foreground "grey")))
-                      (insert (propertize (format "(start: l. %s, "
-                                                  (cdr (assoc 'line (cdr (assoc 'start (cdr (assoc 'loc y))))))) 'font-lock-face '(:foreground "grey")))
-                      (insert (propertize (format "c. %s; "
-                                                  (cdr (assoc 'column (cdr (assoc 'start (cdr (assoc 'loc y))))))) 'font-lock-face '(:foreground "grey")))
-                    (insert (propertize (format "end: l. %s, "
-                                                (cdr (assoc 'line (cdr (assoc 'end (cdr (assoc 'loc y))))))) 'font-lock-face '(:foreground "grey")))
-                    (insert (propertize (format "c. %s)\n"
-                                                (cdr (assoc 'column (cdr (assoc 'end (cdr (assoc 'loc y))))))) 'font-lock-face '(:foreground "grey")))))))
-              (cdr (assoc 'message err)))
+              (defun format-file-path (y s)
+                (insert (propertize (format "    %s path: \n        %s\n         "
+                                            s
+                                      (cdr (assoc 'source (cdr (assoc 'loc y))))) 'font-lock-face '(:foreground "grey")))
+                (insert (propertize (format "(start: l. %s, "
+                                            (cdr (assoc 'line (cdr (assoc 'start (cdr (assoc 'loc y))))))) 'font-lock-face '(:foreground "grey")))
+                (insert (propertize (format "c. %s; "
+                                            (cdr (assoc 'column (cdr (assoc 'start (cdr (assoc 'loc y))))))) 'font-lock-face '(:foreground "grey")))
+              (insert (propertize (format "end: l. %s, "
+                                          (cdr (assoc 'line (cdr (assoc 'end (cdr (assoc 'loc y))))))) 'font-lock-face '(:foreground "grey")))
+              (insert (propertize (format "c. %s)\n"
+                                          (cdr (assoc 'column (cdr (assoc 'end (cdr (assoc 'loc y))))))) 'font-lock-face '(:foreground "grey"))))
+              (format-file-path (svref (cdr (assoc 'message err)) 0) "start")
+              (format-file-path (svref (cdr (assoc 'message err)) 2) "end")
             (insert "\n"))
    e))
   ;;(mapc (lambda (m) (format "hello %s" m)) (assoc 'message e)))
