@@ -331,6 +331,9 @@ you should place your code here."
   (spacemacs/set-leader-keys "w|" 'evil-window-set-width)
   (spacemacs/set-leader-keys "w_" 'evil-window-set-height)
 
+
+  (spacemacs/set-leader-keys "so" 'helm-imenu)
+
   (with-eval-after-load 'org
     (require 'ox-bibtex)
     ;; https://emacs.stackexchange.com/questions/29854/org-mode-and-bibtex-latex-export-problem
