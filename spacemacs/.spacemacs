@@ -366,12 +366,58 @@ you should place your code here."
     "export to html and post process with princexml"
     (interactive)
     (org-html-export-to-html)
-    (shell-command (format "prince %s" buffer-file-name))
-    (shell-command (format "prince %s" (concat (substring buffer-file-name 0 -3) "html")))
+    (shell-command (format "prince %s" (concat (substring (shell-quote-argument buffer-file-name) 0 -3) "html")))
     )
   (spacemacs/set-leader-keys-for-major-mode 'org-mode "eh" 'export-princexml)
   (load-file "./config/spacemacs/flow/flow.el")
   (init-flowjs)
+
+
+  (defun nova/org-pdf-view ()
+    "export to html and post process with princexml"
+    (interactive)
+    (let ((buffer
+           (concat
+            (substring
+             buffer-file-name 0 -3)
+            "pdf")))
+          (split-window-right-and-focus)
+          (find-file buffer)))
+
+  (defun nova/org-save-and-export ()
+    (interactive)
+    (if (bound-and-true-p nova-mode)
+        (export-princexml)
+      (message "nova-mode is off")))
+
+  (defun nova/nova-mode-init ()
+    (interactive)
+    (if (bound-and-true-p nova-mode)
+        (progn
+          (nova/org-pdf-view)
+          (add-hook 'after-save-hook 'nova/org-save-and-export))
+      (message "nova-mode is off")))
+
+;;;###autoload
+  (define-minor-mode nova-mode
+    "Get your foos in the right places.")
+
+;;;###autoload
+  ; (add-hook 'org-mode-hook 'nova-mode)
+
+  (provide 'nova-mode)
+
+  (add-hook 'nova-mode-hook 'nova/nova-mode-init)
+
+
+
+  (defun kdm/org-save-and-export ()
+    (interactive)
+    (if (eq major-mode 'org-mode)
+        (export-princexml)))
+
+  ; (add-hook 'after-save-hook 'kdm/org-save-and-export)
+
   )
 
 (load-library "find-lisp")
