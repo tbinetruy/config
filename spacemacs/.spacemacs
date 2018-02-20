@@ -433,7 +433,7 @@ you should place your code here."
    (mapcar
     (quote abbreviate-file-name)
     (split-string
-     (shell-command-to-string "find ~/Dropbox/ ~/code ~/nova -name '*.org' -not -path '*/node_modules/*' -not -path '*/.#*' -not -path '*/.dropbox.cache/*' ! -iname '.*'")
+     (shell-command-to-string "find ~/Dropbox/ ~/code -name '*.org' -not -path '*/node_modules/*' -not -path '*/.#*' -not -path '*/.dropbox.cache/*' ! -iname '.*'")
      "
 ")))
  '(package-selected-packages
