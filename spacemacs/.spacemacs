@@ -446,6 +446,11 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  )
 
+(setq org-agenda-use-tag-inheritance nil)
+(setq org-agenda-inhibit-startup t)
+(setq org-agenda-dim-blocked-tasks nil)
+(setq org-agenda-ignore-drawer-properties '(esfort appt category))
+
 ;; org-todo types
 (setq org-todo-keywords '((type "TB" "JM" "KK" "JB" "BS" "ALL" "|" "DONE")))
 
