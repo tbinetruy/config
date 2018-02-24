@@ -469,5 +469,11 @@ you should place your code here."
   (not (string= lang "emacs-lisp")))  ; don't ask for elisp
 (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
-;; recalculate org buffer tables
-(add-hook 'before-save-hook 'org-table-recalculate-buffer-tables)
+;; recalculate org buffer tables on nova-mode
+(defun nova/recalc-buffer-tables ()
+  (interactive)
+  (if (bound-and-true-p nova-mode)
+      (org-table-recalculate-buffer-tables)
+    (message "nova-mode is off")))
+
+(add-hook 'before-save-hook 'nova/recalc-buffer-tables)
