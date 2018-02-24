@@ -458,3 +458,14 @@ you should place your code here."
 ;; remove js2 mode semi column warning
 (setq js2-strict-missing-semi-warning nil)
 
+
+(put 'helm-make-build-dir 'safe-local-variable 'stringp)
+
+;; don't ask for elisp code exectution
+;; should test for nova-mode
+(defun my-org-confirm-babel-evaluate (lang body)
+  (not (string= lang "emacs-lisp")))  ; don't ask for elisp
+(setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
+
+;; recalculate org buffer tables
+(add-hook 'before-save-hook 'org-table-recalculate-buffer-tables)
