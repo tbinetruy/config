@@ -327,6 +327,7 @@ you should place your code here."
   (require 'dtrt-indent)
   (spacemacs/set-leader-keys "ww" 'ace-window)
   (spacemacs/set-leader-keys "wW" 'other-window)
+  (spacemacs/set-leader-keys "wm" 'maximize-window)
 
   ;; overriding some SPC w commands
   (spacemacs/set-leader-keys "w|" 'evil-window-set-width)
