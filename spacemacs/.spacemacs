@@ -448,7 +448,8 @@ you should place your code here."
  )
 
 (setq org-agenda-use-tag-inheritance nil)
-(setq org-agenda-inhibit-startup t)
+(setq org-startup-folded nil)
+(setq org-agenda-inhibit-startup nil)
 (setq org-agenda-dim-blocked-tasks nil)
 (setq org-agenda-ignore-drawer-properties '(esfort appt category))
 
