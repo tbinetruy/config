@@ -140,8 +140,18 @@
 
   (flycheck-define-checker javascript-flow
     "Static type checking using Flow."
-    :command ("npm run -s flow -- " "--json")
+    ;; :command ("npm run -s flow -- " "--json")
+    :command (
+              ;; doesn't work with 2 commented lines bellow for some reason
+              ;;"npm" "run"
+              "flow"
+              ;;"--"
+              "check-contents"
+              "--json"
+              "--from" "emacs"
+              source-original)
     :error-parser flycheck-parse-flow
+    :standard-input t
     :modes (react-mode js2-mode rjsx-mode)
     :next-checkers ((error . javascript-eslint))
     )
