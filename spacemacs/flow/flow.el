@@ -304,12 +304,10 @@
           (buffer (current-buffer)))
       (switch-to-buffer-other-window "*Shell Command Output*")
       (shell-command
-      (format "%s suggest %s%s"
-              flow_binary
-              file
-              region))
-      (diff-mode)
-      (switch-to-buffer-other-window buffer))
+        (format "%s suggest %s"
+                flow_binary
+                file))
+      (diff-mode))
   )
 
   (global-set-key (kbd "C-t") 'flow-suggest)
