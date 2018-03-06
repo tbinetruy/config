@@ -137,7 +137,7 @@
 
   (flycheck-define-checker javascript-flow
     "Static type checking using Flow."
-    :command ("flow" "--json")
+    :command ("npm run -s flow -- " "--json")
     :error-parser flycheck-parse-flow
     :modes (react-mode js2-mode rjsx-mode)
     :next-checkers ((error . javascript-eslint))
