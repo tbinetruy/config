@@ -268,8 +268,6 @@
       (format "%s"
        (cdr(assoc 'type
                    (json-read-from-string
-                   (nth 1
-                         (split-string
                          (shell-command-to-string
                            (concat
                            "echo "
@@ -279,8 +277,7 @@
                                    flow_binary
                                    file
                                    line
-                                   (1+ col))))
-                         "\n$")))))))))
+                                   (1+ col)))))))))))
 
   (spacemacs/set-leader-keys-for-major-mode 'react-mode "ft" 'flow-type-at-pos)
   (spacemacs/set-leader-keys-for-major-mode 'js2-mode "ft" 'flow-type-at-pos)
