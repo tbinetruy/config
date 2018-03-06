@@ -66,7 +66,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(company-flow dtrt-indent rjsx-mode)
+   dotspacemacs-additional-packages '(company-flow dtrt-indent rjsx-mode qml-mode)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -322,6 +322,9 @@ layers configuration.
 This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
+  (autoload 'qml-mode "qml-mode" "Editing Qt Declarative." t)
+  (add-to-list 'auto-mode-alist '("\\.qml$" . qml-mode))
+
   (spacemacs/add-flycheck-hook 'rjsx-mode)
 
   (require 'dtrt-indent)
