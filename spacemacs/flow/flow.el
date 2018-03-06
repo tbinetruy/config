@@ -121,12 +121,15 @@
       (let ((o (json-read-from-string output)))
         (mapcar #'(lambda (errp)
                     (let ((err (cadr (assoc 'message errp)))
+                          (err-full (mapcar #'(lambda (e)
+                                              (cdr (assoc 'descr e)))
+                                            (cdr (assoc 'message errp))))
                           (err2 (cadr (cdr (assoc 'message errp)))))
                       (flycheck-error-new
                       :line (cdr (assoc 'line err))
-                      :column (cdr (assoc 'start err))
+                      :column (cdr (assoc 'start err-full))
                       :level 'error
-                      :message (concat (cdr (assoc 'descr err)) ". " (cdr (assoc 'descr err2)))
+                      :message (format "%s" err-full)
                       :filename (f-relative
                                   (cdr (assoc 'path err))
                                   (f-dirname (file-truename
