@@ -151,6 +151,7 @@
               "--from" "emacs"
               source-original)
     :error-parser flycheck-parse-flow
+              ;"check-contents" "--json" "--from" "emacs" source-inplace)
     :standard-input t
     :modes (react-mode js2-mode rjsx-mode)
     :next-checkers ((error . javascript-eslint))
