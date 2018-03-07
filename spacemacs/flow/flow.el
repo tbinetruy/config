@@ -394,3 +394,6 @@
   (add-hook 'js-mode-hook 'company-force-flow)
   (add-hook 'rjsx-mode-hook 'company-force-flow)
   (add-hook 'react-mode-hook 'company-force-flow))
+
+(with-eval-after-load 'company-flow
+  (add-to-list 'company-flow-modes 'react-mode))
