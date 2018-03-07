@@ -438,11 +438,11 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(evil-want-Y-yank-to-eol nil)
  '(org-agenda-files
-    (mapcar
-      (quote abbreviate-file-name)
-      (split-string
-        (shell-command-to-string "find ~/Dropbox/ ~/code/ -name '*.org' -not -path '*/node_modules/*' -not -path '*/.#*' -not -path '*/.dropbox.cache/*' ! -iname '.*'")
-          "
+   (mapcar
+    (quote abbreviate-file-name)
+    (split-string
+     (shell-command-to-string "find ~/Dropbox/ ~/code/ -name '*.org' -not -path '*/node_modules/*' -not -path '*/.#*' -not -path '*/.dropbox.cache/*' ! -iname '.*'")
+     "
 ")))
  '(package-selected-packages
    (quote
