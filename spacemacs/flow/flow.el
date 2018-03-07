@@ -320,24 +320,28 @@
   (defun flow-get-def ()
     "jump to definition"
     (interactive)
-    (let ((file (buffer-file-name))
+    (let* ((file (buffer-file-name))
           (line (line-number-at-pos))
           (col (current-column))
           (buffer-content (buffer-string))
-          (buffer (current-buffer)))
-      (switch-to-buffer-other-window "*Shell Command Output*")
-      (shell-command
-       (concat
-        "echo "
-        (shell-quote-argument buffer-content)
-        " | "
-        (format "%s get-def --from emacs --path=%s %d %d"
-                flow_binary
-                file
-                line
-                (1+ col))))
-      (compilation-mode))
+          (buffer (current-buffer))
+          (output
+           (json-read-from-string
+            (shell-command-to-string
+             (concat
+              "echo "
+              (shell-quote-argument buffer-content)
+              " | "
+              (format "%s get-def --from emacs --path=%s %d %d --quiet --json"
+                      flow_binary
+                      file
+                      line
+                      (1+ col)))))))
+      (find-file (cdr (assoc 'path output)))
+      (goto-line (cdr (assoc 'line output)))
+      (move-to-column (cdr (assoc 'start output)) t))
   )
+
 
   (spacemacs/set-leader-keys-for-major-mode 'react-mode "fd" 'flow-get-def)
   (spacemacs/set-leader-keys-for-major-mode 'js2-mode "fd" 'flow-get-def)
