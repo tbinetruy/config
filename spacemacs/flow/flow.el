@@ -28,6 +28,7 @@
 ;; defining basic mode to diplay npm run flow -- --json
 ;; results.
 (require 'generic-x) ;; we need this
+(require 'async)
 (defun flowing-mode-config ()
   "For use in `foo-mode-hook'."
   ;;(define-key map (kbd [tab]) 'evil-toggle-fold)
@@ -393,7 +394,52 @@
 
   (add-hook 'js-mode-hook 'company-force-flow)
   (add-hook 'rjsx-mode-hook 'company-force-flow)
-  (add-hook 'react-mode-hook 'company-force-flow))
+  (add-hook 'react-mode-hook 'company-force-flow)
+
+  ;;; eldoc-mode
+  (setq debug-on-error t)
+  (defun flow-type-at-pos-eldoc ()
+    "show type"
+    (setq file (buffer-file-name))
+    (setq line (line-number-at-pos))
+    (setq col (current-column))
+    (setq buffer-content (buffer-string))
+    ;(message buffer-content)
+
+    (async-start
+     `(lambda ()
+        ;; copying vars by value because process has its own buffer
+        (set 'file ,file)
+        (set 'line ,line)
+        (set 'buffer-content ,buffer-content)
+        (set 'col ,col)
+        ;; stripping properties from text
+        (set-text-properties 0 (length buffer-content) nil buffer-content)
+
+        (setq output (shell-command-to-string
+                   (concat
+                    "echo "
+                    (shell-quote-argument buffer-content)
+                    " | "
+                    (format "npm run -s flow -- type-at-pos --from emacs --path=%s %d %d --json"
+                            file
+                            line
+                            (1+ col)))))
+
+        (format "%s" output))
+
+     (lambda (result)
+       (message "%s" (cdr (assoc 'type (json-read-from-string result))))))
+
+    (format ""))
+
+  (defun js2--eldoc-via-tern ()
+    (message (flow-type-at-pos-eldoc)))
+
+  (add-hook 'react-mode-hook
+            (lambda ()
+              (setq-local eldoc-documentation-function #'js2--eldoc-via-tern)))
+  )
 
 (with-eval-after-load 'company-flow
   (add-to-list 'company-flow-modes 'react-mode))
