@@ -450,5 +450,9 @@
   (add-hook 'react-mode-hook 'js2-imenu-extras-mode)
   (add-hook 'react-mode-hook 'js2-minor-mode)
 
+  ;; Turn off js2 mode errors & warnings (we lean on eslint/standard)
+  (setq js2-mode-show-parse-errors nil)
+  (setq js2-mode-show-strict-warnings nil)
+
 (with-eval-after-load 'company-flow
   (add-to-list 'company-flow-modes 'react-mode))
