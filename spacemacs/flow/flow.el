@@ -442,7 +442,7 @@
   (add-hook 'react-mode-hook
             (lambda ()
               (setq-local eldoc-documentation-function #'js2--eldoc-via-tern)))
-  )
+
   ;; imenu in react mode
   ; doesn't work very well
   (add-hook 'react-mode-hook (lambda ()
