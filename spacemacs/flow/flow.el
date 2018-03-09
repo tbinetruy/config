@@ -443,6 +443,12 @@
             (lambda ()
               (setq-local eldoc-documentation-function #'js2--eldoc-via-tern)))
   )
+  ;; imenu in react mode
+  ; doesn't work very well
+  (add-hook 'react-mode-hook (lambda ()
+                               (setq imenu-create-index-function #'js2-mode-create-imenu-index)))
+  (add-hook 'react-mode-hook 'js2-imenu-extras-mode)
+  (add-hook 'react-mode-hook 'js2-minor-mode)
 
 (with-eval-after-load 'company-flow
   (add-to-list 'company-flow-modes 'react-mode))
