@@ -454,5 +454,67 @@
   (setq js2-mode-show-parse-errors nil)
   (setq js2-mode-show-strict-warnings nil)
 
+  ;; switch to other file
+  ;; see notes.org
+  (defun does-file-name-end-with (file-name str)
+    (string-equal
+    str
+    (substring
+      file-name
+      (- (length file-name) (length str))
+      (length file-name))))
+
+  (defun does-buffer-file-name-end-with (str)
+    (let ((file-name (file-name-sans-extension buffer-file-name)))
+      (does-file-name-end-with file-name str)))
+
+  (defun remove-substring (str substr)
+    (if (< (length str) (length substr)) nil
+    (substring str 0 (- (length str) (length substr)))))
+
+  (defun strip-file-name (file-name str1 str2)
+    (if (does-file-name-end-with file-name str1)
+        (setq file-name (remove-substring file-name str1))
+        nil)
+    (if (does-file-name-end-with file-name str2)
+        (setq file-name (remove-substring file-name str2))
+        nil)
+    file-name)
+
+  (defun strip-buffer-file-name ()
+    (let ((file-name (file-name-sans-extension buffer-file-name))
+          (str1 "Types")
+          (str2 "Styles"))
+    (strip-file-name file-name str1 str2)))
+
+  (defun get-stripped-buffer-file-name (str)
+    (format "%s%s.%s" (strip-buffer-file-name) str (file-name-extension buffer-file-name)))
+
+  (defun jump-to-types ()
+    (interactive)
+    (find-file (get-stripped-buffer-file-name "Types")))
+
+  (defun jump-to-styles ()
+    (interactive)
+    (find-file (get-stripped-buffer-file-name "Styles")))
+
+  (defun jump-to-implementation ()
+    (interactive)
+    (find-file (get-stripped-buffer-file-name "")))
+
+  (spacemacs/set-leader-keys-for-major-mode 'react-mode "gt" 'jump-to-types)
+  (spacemacs/set-leader-keys-for-major-mode 'js2-mode "gt" 'jump-to-types)
+  (spacemacs/set-leader-keys-for-major-mode 'rjsx-mode "gt" 'jump-to-types)
+
+  (spacemacs/set-leader-keys-for-major-mode 'react-mode "gs" 'jump-to-styles)
+  (spacemacs/set-leader-keys-for-major-mode 'js2-mode "gs" 'jump-to-styles)
+  (spacemacs/set-leader-keys-for-major-mode 'rjsx-mode "gs" 'jump-to-styles)
+
+  (spacemacs/set-leader-keys-for-major-mode 'react-mode "gi" 'jump-to-implementation)
+  (spacemacs/set-leader-keys-for-major-mode 'js2-mode "gi" 'jump-to-implementation)
+  (spacemacs/set-leader-keys-for-major-mode 'rjsx-mode "gi" 'jump-to-implementation)
+
+)
+
 (with-eval-after-load 'company-flow
   (add-to-list 'company-flow-modes 'react-mode))
