@@ -401,7 +401,6 @@
   (add-hook 'react-mode-hook 'company-force-flow)
 
   ;;; eldoc-mode
-  (setq debug-on-error t)
   (defun flow-type-at-pos-eldoc ()
     "show type"
     (setq file (buffer-file-name))
