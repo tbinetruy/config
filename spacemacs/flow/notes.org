@@ -1,0 +1,87 @@
+* Flow.el TODOs 
+** DONE projectile-find-type-file
+   CLOSED: [2018-03-07 Wed 22:12]
+
+check buffer file ends with test
+#+begin_src emacs-lisp
+(defun does-file-name-end-with (file-name str)
+  (string-equal
+   str
+   (substring
+    file-name
+    (- (length file-name) (length str))
+    (length file-name))))
+
+(defun does-buffer-file-name-end-with (str)
+  (let ((file-name (file-name-sans-extension buffer-file-name)))
+    (does-file-name-end-with file-name str)))
+
+(defun remove-substring (str substr)
+  (if (< (length str) (length substr)) nil
+  (substring str 0 (- (length str) (length substr)))))
+
+(defun strip-file-name (file-name str1 str2)
+  (if (does-file-name-end-with file-name str1) 
+      (setq file-name (remove-substring file-name str1)) 
+      nil)
+  (if (does-file-name-end-with file-name str2) 
+      (setq file-name (remove-substring file-name str2)) 
+      nil)
+  file-name)
+
+(defun strip-buffer-file-name ()
+  (let ((file-name (file-name-sans-extension buffer-file-name))
+        (str1 "Types") 
+        (str2 "Styles"))
+  (strip-file-name file-name str1 str2)))
+
+(defun get-stripped-buffer-file-name (str)
+  (format "%s%s.%s" (strip-buffer-file-name) str (file-name-extension buffer-file-name)))
+
+(defun get-types-file ()
+  (get-stripped-buffer-file-name "Types"))
+
+(defun get-styles-file ()
+  (get-stripped-buffer-file-name "Styles"))
+
+;;;;;;;;;;;;;
+;;; Tests ;;;
+;;;;;;;;;;;;;
+
+(if (does-buffer-file-name-end-with "ess") t nil) ; returns nil
+(if (does-buffer-file-name-end-with "es") t nil) ; returns t
+
+(strip-file-name "Foo" "Styles" "Types") ; Foo
+(strip-file-name "FooTypes" "Styles" "Types") ; Foo
+(strip-file-name "FooStyles" "Styles" "Types") ; Foo
+(strip-file-name "FooBar" "Styles" "Types") ; FooBar
+(strip-buffer-file-name) ; /..path../notes
+(get-stripped-buffer-file-name "") ; /..path../notes.org
+(get-stripped-buffer-file-name "Types") ; /..path../notesTypes.org
+(get-stripped-buffer-file-name "Styles") ; /..path../notesStyles.org
+(get-types-file) ; /..path../notesTypes.org
+(get-styles-file) ; /..path../notesStyles.org
+
+#+end_src
+
+
+
+#+RESULTS:
+: /home/thomas/config/spacemacs/flow/notesStyles.org
+
+#+begin_src python
+if buffer_file_name.endsWith('Types'):
+  return nil # corresponding type file already opened
+else: # open 
+  file_name = buffer_file_name.stripTail('Styles') + '.' + buffer_file_name.getExtension()
+
+  if file_name.doesExist():
+    open_buffer(file_name)
+  else:
+    return nil
+#+end_src
+
+** TB projectile-find-style-file
+
+Pseudo code:
+
