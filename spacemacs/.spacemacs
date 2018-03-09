@@ -351,12 +351,14 @@ you should place your code here."
             "pdflatex -interaction nonstopmode -output-directory %o %f"
             "pdflatex -interaction nonstopmode -output-directory %o %f"))
     (require 'ob-python)
+    (require 'ob-lisp)
     (require 'ob-calc)
     (require 'ob-ditaa)
     (org-babel-do-load-languages
      'org-babel-load-languages
      '(
        (C . t)
+       (emacs-lisp . t)
        (python .t)
        (ditaa .t)
        (plantuml . t)
