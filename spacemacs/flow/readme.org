@@ -61,6 +61,10 @@ Linting as you type is ran through /flycheck [0]/. Installing the spacemacs /syn
 
 [1] http://spacemacs.org/layers/+checkers/syntax-checking/README.html
 
+** Basic eldoc type at pos (experimental)
+Very basic eldoc [0] showing type at position. Still needs a lot of work, it currently only shows uncolored type under cursor position. I've only activated it for react mode. But I need to only activate it for files that start with the flow comment because it's causing problems on none flow files (obviously). /It's only activated on react-mode/ for now.
+
+[0] https://www.emacswiki.org/emacs/c-eldoc.el
 
 ** Key bindings
 All keybindings are /preceeded/ by: *<SPC> m f*.
@@ -95,6 +99,7 @@ emacs flow.js    # open flow.js with emacs
 | type at position                      | [[./screenshots/flow-type-at-pos.png]]         |
 | type of std function                  | [[./screenshots/flow-type-at-pos-js-std.png]]  |
 | Flow status on project (experimental) | [[./screenshots/flow-status-proto.png]]        |
+| basic eldoc (experimental)            | [[./screenshots/flow-eldoc.png]]               |
 
 
 
