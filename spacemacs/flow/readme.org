@@ -55,7 +55,7 @@ Autocomplete is ran through /company-flow [0]/. If you have the spacemacs /auto-
 [2] http://company-mode.github.io/
 
 ** Flow type linting
-Linting is ran through /flycheck [0]/. As of right now, the only limitation is that flow linting only occurs on file saves (but eslinting still occurs as you type). Installing the spacemacs /syntax-checking layer [1]/ will install flycheck as a dependency.
+Linting as you type is ran through /flycheck [0]/. Installing the spacemacs /syntax-checking layer [1]/ will install flycheck as a dependency.
 
 [0] http://www.flycheck.org/en/latest/
 
