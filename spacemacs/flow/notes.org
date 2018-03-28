@@ -1,4 +1,50 @@
 * Flow.el TODOs 
+
+#+begin_src emacs-lisp
+(replace-regexp-in-string "\\(string\\|number\\)" "\\1hey" "number")
+(replace-regexp-in-string
+          "\\(string\\|number\\)"
+          (propertize "\\1hey" 'face 'italic)
+          "number")
+(setq str "foo number string")
+(string-match
+          "\\(string\\|number\\)"
+          str)
+(match-end 0)
+(string-match
+          "\\(string\\|number\\)"
+          str
+          (match-end 0))
+(match-end 0)
+(string-match
+          "\\(string\\|number\\)"
+          str
+          (match-end 0))
+
+(setq desc "yo")
+(with-temp-buffer "bar"
+  (insert str)
+  (goto-char (point-min))
+  (when (re-search-forward "\\(number\\)" nil t)
+            (replace-match (propertize (match-string-no-properties 0) 'font 'italic)))
+  (buffer-string))
+
+(replace-regexp-in-string
+         ; "\\([a-zA-z0-9]+\\): \\([a-z]+\\)"
+          "\\([\\?]?:\\)"
+           "\\1h"
+          "(A9a?: nu2mber, b: string) => void")
+
+(replace-regexp-in-string
+          "\\([a-z0-9A-Z]+\\)\\<\\([a-z0-9A-Z]+\\)\\>"
+           "\\1<\\2>"
+          "Map<RS>")
+#+end_src
+
+#+RESULTS:
+: Map<RS>
+
+
 ** DONE projectile-find-type-file
    CLOSED: [2018-03-07 Wed 22:12]
 

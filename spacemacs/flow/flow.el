@@ -413,7 +413,9 @@
      `(lambda ()
         ;; copying vars by value because process has its own buffer
         (set 'file ,file)
-        (set 'line ,line)
+        (set 'line ,line)                         (when (re-search-forward "\\(number\\)" nil t)
+                           (replace-match (propertize (match-string-no-properties 1) 'face 'italic)))
+
         (set 'buffer-content ,buffer-content)
         (set 'col ,col)
         ;; stripping properties from text
@@ -432,7 +434,54 @@
         (format "%s" output))
 
      (lambda (result)
-       (message "%s" (cdr (assoc 'type (json-read-from-string result))))))
+       (setq str (cdr (assoc 'type (json-read-from-string result))))
+       ; (setq str (propertize str 'face 'italic))
+
+;       (setq str (replace-regexp-in-string
+;                  "\\(string\\|number\\)"
+;                  (propertize "\\1hey" 'face 'italic)
+;                  (substring-no-properties str) nil))
+
+       (with-temp-buffer "bar"
+                         (insert str)
+                         (goto-char (point-min))
+
+                         ;; basic types: number, string, boolean
+                         (while (re-search-forward "\\(number\\|string\\|boolean\\)" nil t)
+                           (replace-match (propertize (match-string-no-properties 1) 'face 'italic)))
+                         (goto-char (point-min))
+
+                         ;; type<Name>
+                         (while (re-search-forward "\\([a-z0-9A-Z\\$]+\\)\<\\([a-z0-9A-Z]+\[?\]?\\)\>" nil t)
+                           (replace-match (concat
+                                           (propertize (match-string-no-properties 1) 'face '(:foreground "dark orange" :weight "bold"))
+                                           (propertize "<" 'face '(:foreground "red" :weight "bold"))
+                                           (propertize (match-string-no-properties 2) 'face '(:foreground "orange" :weight "bold"))
+                                           (propertize ">" 'face '(:foreground "red" :weight "bold")))))
+                         (goto-char (point-min))
+
+                         ;; type Name
+                         (while (re-search-forward "type \\([a-z0-9A-Z]+\\)" nil t)
+                           (replace-match (concat
+                                           "type "
+                                           (propertize (match-string-no-properties 1) 'face 'bold-italic))))
+                         (goto-char (point-min))
+
+                         ;; key: type
+                         (while (re-search-forward "\\([a-z0-9A-Z]+\\)\\([\\?]?: \\)\\([a-z0-9A-Z]+\\)" nil t)
+                           (replace-match (concat
+                                           (propertize (match-string-no-properties 1) 'face 'bold)
+                                           (match-string-no-properties 2)
+                                           (propertize (match-string-no-properties 3) 'face 'italic))))
+                         (goto-char (point-min))
+
+                         ;; => returnType
+                         (while (re-search-forward "=> \\([a-zA-Z0-9]+\\)" nil t)
+                           (replace-match (concat "=> " (propertize (match-string-no-properties 1) 'face 'bold-italic))))
+                         (goto-char (point-min))
+                         (setq str(buffer-string)))
+
+       (message "%s" str)))
 
     (format ""))
 
