@@ -39,10 +39,15 @@
           "\\([a-z0-9A-Z]+\\)\\<\\([a-z0-9A-Z]+\\)\\>"
            "\\1<\\2>"
           "Map<RS>")
+
+(replace-regexp-in-string
+          "\\(\\+?\\)hi"
+           "\\1yo"
+          "hi")
 #+end_src
 
 #+RESULTS:
-: Map<RS>
+: yo
 
 
 ** DONE projectile-find-type-file

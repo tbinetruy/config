@@ -452,34 +452,47 @@
                          (goto-char (point-min))
 
                          ;; type<Name>
-                         (while (re-search-forward "\\([a-z0-9A-Z\\$]+\\)\<\\([a-z0-9A-Z]+\[?\]?\\)\>" nil t)
+                         (while (re-search-forward "\\(= \\|: \\)\\([a-z0-9A-Z\\$]+\\)\<\\([a-z0-9A-Z]+\[?\]?\\)\>" nil t)
                            (replace-match (concat
-                                           (propertize (match-string-no-properties 1) 'face '(:foreground "dark orange" :weight "bold"))
-                                           (propertize "<" 'face '(:foreground "red" :weight "bold"))
-                                           (propertize (match-string-no-properties 2) 'face '(:foreground "orange" :weight "bold"))
-                                           (propertize ">" 'face '(:foreground "red" :weight "bold")))))
+                                           (propertize (match-string-no-properties 1) 'face '(:foreground "light coral" :weight "italic"))
+                                           (propertize (match-string-no-properties 2) 'face '(:foreground "light coral" :weight "italic"))
+                                           (propertize "<" 'face '(:foreground "chartreuse" :weight bold))
+                                           (propertize (match-string-no-properties 3) 'face '(:foreground "chocolate" :weight "italic"))
+                                           (propertize ">" 'face '(:foreground "chartreuse" :weight bold)))))
                          (goto-char (point-min))
 
-                         ;; type Name
-                         (while (re-search-forward "type \\([a-z0-9A-Z]+\\)" nil t)
+                         ;; type Name =
+                         (while (re-search-forward "type \\([a-z0-9A-Z]+\\) =" nil t)
                            (replace-match (concat
-                                           "type "
-                                           (propertize (match-string-no-properties 1) 'face 'bold-italic))))
+                                           (propertize "type " 'face '(:foreground "dark orange" :weight bold))
+                                           (propertize (match-string-no-properties 1) 'face '(:foreground "light coral" :weight bold))
+                                           " =")))
+                         (goto-char (point-min))
+
+                        ; ;; type type<Name> =
+                         (while (re-search-forward "type \\([a-z0-9A-Z\\$]+\\)\<\\([a-z0-9A-Z]+\[?\]?\\)\> =" nil t)
+                           (replace-match (concat
+                                           (propertize "type " 'face '(:foreground "dark orange" :weight bold))
+                                           (propertize (match-string-no-properties 1) 'face '(:foreground "pink" :weight bold))
+                                           (propertize "<" 'face '(:foreground "chartreuse" :weight bold))
+                                           (propertize (match-string-no-properties 2) 'face '(:foreground "chocolate" :weight bold))
+                                           (propertize ">" 'face '(:foreground "chartreuse" :weight bold))
+                                           " =")))
                          (goto-char (point-min))
 
                          ;; key: type
-                         (while (re-search-forward "\\([a-z0-9A-Z]+\\)\\([\\?]?: \\)\\([a-z0-9A-Z]+\\)" nil t)
+                         (while (re-search-forward "\\([a-z0-9A-Z]+\\)\\([\\?]?: \\)" nil t)
                            (replace-match (concat
-                                           (propertize (match-string-no-properties 1) 'face 'bold)
-                                           (match-string-no-properties 2)
-                                           (propertize (match-string-no-properties 3) 'face 'italic))))
+                                           (propertize (match-string-no-properties 1) 'face '(:foreground "medium spring green" :weight bold))
+                                           (match-string-no-properties 2))))
+                                           ;(propertize (match-string-no-properties 3) 'face 'italic))))
                          (goto-char (point-min))
 
                          ;; => returnType
                          (while (re-search-forward "=> \\([a-zA-Z0-9]+\\)" nil t)
                            (replace-match (concat "=> " (propertize (match-string-no-properties 1) 'face 'bold-italic))))
                          (goto-char (point-min))
-                         (setq str(buffer-string)))
+                         (setq str (buffer-string)))
 
        (message "%s" str)))
 
