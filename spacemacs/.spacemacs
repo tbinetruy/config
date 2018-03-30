@@ -377,7 +377,8 @@ you should place your code here."
     (interactive)
     (org-html-export-to-html)
     (shell-command (format "prince %s" (concat (substring (shell-quote-argument buffer-file-name) 0 -3) "html")))
-    )
+    (delete-file (format "%s" (concat (substring buffer-file-name 0 -3) "html"))))
+
   (spacemacs/set-leader-keys-for-major-mode 'org-mode "eh" 'export-princexml)
   (load-file "~/config/spacemacs/flow/flow.el")
   (init-flowjs)
