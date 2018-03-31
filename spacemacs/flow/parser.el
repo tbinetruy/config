@@ -10,8 +10,8 @@
         (progn
           (setq read-value (format "%s"
                                    (buffer-substring current-point match-end-pos)))
-          `((type . "number")
-            (value . ,read-value)))
+          `(((type . "number")
+             (value . ,read-value))))
       (nil))))
 
 (defun parse/is-type (c)
@@ -25,8 +25,8 @@
         (progn
           (setq read-value (format "%s"
                                    (buffer-substring current-point match-end-pos)))
-          `((type . "type")
-            (value . ,read-value)))
+          `(((type . "type")
+             (value . ,read-value))))
       (nil))))
 
 (defun parse/is-special-char (c)
@@ -37,11 +37,12 @@
         (read-value ""))
     (setq read-value (format "%c"
                              (char-after)))
-    `((type . "special-char")
-      (value . ,read-value))))
+    `(((type . "special-char")
+       (value . ,read-value)))))
 
 (defun parse (str)
-  (let ((output "")
+  (let ((output nil)
+        (input nil)
         (current-character nil)
         (counter nil)
         (keywords '("type")))
@@ -50,8 +51,8 @@
                (not counter))
           (progn
             (setq counter 1)
-            (message "%s"
-                     (funcall success-callback))
+            (setq output (append output
+                          (funcall success-callback)))
             (backward-char backward-on-success))
         nil))
     (defun parse/top-level-parsing ()
@@ -72,7 +73,7 @@
         (setq current-character (char-after))
         (parse/top-level-parsing)
         (forward-char 1))
-      (setq output (buffer-string)))
+      (setq input (buffer-string)))
     (format "%s" output)))
 
 (provide 'parse)
