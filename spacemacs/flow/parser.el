@@ -1,3 +1,4 @@
+
 (defun parse/is-digit (c)
   (string-match "[0-9]" (format "%c" c)))
 
@@ -44,32 +45,25 @@
         (current-character nil)
         (counter nil)
         (keywords '("type")))
-    (defun parse/top-level-parsing ()
-      (if (and (parse/is-digit current-character)
-               (not counter))
-          (progn
-            (setq counter 1)
-            (message "%s" (parse/read-digit))
-            (backward-char 1))
-        nil)
-      (if (and (parse/is-special-char current-character)
-               (not counter))
-          (progn
-            (setq counter 1)
-            (message "%s" (parse/read-special-char)))
-        nil)
-      (if (and (parse/is-type current-character)
+    (defun parse/test-character (predicate success-callback backward-on-success)
+      (if (and (funcall predicate current-character)
                (not counter))
           (progn
             (setq counter 1)
             (message "%s"
-                     (parse/read-type))
-            (backward-char 1))
-        nil)
+                     (funcall success-callback))
+            (backward-char backward-on-success))
+        nil))
+    (defun parse/top-level-parsing ()
+      (parse/test-character 'parse/is-digit 'parse/read-digit
+                            1)
+      (parse/test-character 'parse/is-special-char
+                            'parse/read-special-char 0)
+      (parse/test-character 'parse/is-type 'parse/read-type
+                            1)
       (if counter
           (setq counter nil)
         nil))
-
     (with-temp-buffer
       "tmp"
       (insert str)
