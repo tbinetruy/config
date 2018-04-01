@@ -78,7 +78,7 @@
 
 
 (defun parser/parse-lexer-output (ast)
-  (let ((lexer-output (car (lexer/lex "{foo: 1.122, bar: foobar}")))
+  (let ((lexer-output (car (lexer/lex "{foo: 1.122, bar: {a: hi, b: what}}")))
         (i 0)
         (j nil))
 
@@ -91,7 +91,7 @@
         (setq type (cdr (assoc 'type (nth i lexer-output))))
         (setq value (cdr (assoc 'value (nth i lexer-output))))
         (setq dict-ast (append dict-ast
-                               `((value . ,value))))
+                               `((value . ,(parser/parse-type)))))
         (setq i (1+ i))
         `(,dict-ast)))
 
