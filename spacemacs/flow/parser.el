@@ -1,4 +1,3 @@
-
 (defun lexer/is-digit (c)
   (string-match "[0-9]" (format "%c" c)))
 
@@ -88,7 +87,11 @@
             (dict-entry nil))
         (setq dict-entry (append dict-entry
                                `((key . ,value))))
-        (setq i (+ i 2))
+        (setq i (+ i 1))
+        (if (and (not (equal ":" value))
+                 (equal counter 0))
+            (message "missing colon at %s" value))
+        (setq i (+ i 1))
         (setq type (cdr (assoc 'type (nth i lexer-output))))
         (setq value (cdr (assoc 'value (nth i lexer-output))))
         (setq dict-entry (append dict-entry
