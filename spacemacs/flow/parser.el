@@ -85,11 +85,13 @@
     (defun parser/parse-dict-entry (dict-ast)
       (let ((type (cdr (assoc 'type (nth i lexer-output))))
             (value (cdr (assoc 'value (nth i lexer-output)))))
-        (setq dict-ast (append dict-ast `((key . ,value))))
+        (setq dict-ast (append dict-ast
+                               `((key . ,value))))
         (setq i (+ i 2))
         (setq type (cdr (assoc 'type (nth i lexer-output))))
         (setq value (cdr (assoc 'value (nth i lexer-output))))
-        (setq dict-ast (append dict-ast `((value . ,value))))
+        (setq dict-ast (append dict-ast
+                               `((value . ,value))))
         (setq i (1+ i))
         `(,dict-ast)))
 
@@ -111,18 +113,24 @@
                   (setq counter 2)))))
         `(dict . ((entries . ,dict-ast)))))
 
-    (while (< i (length lexer-output))
-      (setq j nil)
+    (defun parser/parse-type ()
       (let* ((current-entry (nth i lexer-output))
              (current-type (cdr (assoc 'type current-entry)))
-             (current-value (cdr (assoc 'value current-entry))))
+             (current-value (cdr (assoc 'value current-entry)))
+             (foo nil)
+             (counter nil))
         (if (and (equal current-value "{")
-                 (not j))
-            (setq ast (append ast
-                              (parser/parse-dictionary)))
-          nil))
-      (if (not j)
-          (setq i (1+ i))))
+                 (not counter))
+            (progn
+              (setq counter 1)
+              (setq foo (parser/parse-dictionary))))
+        (if (not counter)
+            (setq foo (cdr (assoc 'value (nth i lexer-output))))
+          (setq i (1+ i)))
+        (list foo)))
+
+    (while (< i (length lexer-output))
+      (setq ast (append ast (parser/parse-type))))
     ast))
 
 (defun parser/parse ()
