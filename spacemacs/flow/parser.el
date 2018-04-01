@@ -77,9 +77,11 @@
 
 
 (defun parser/parse-lexer-output (ast)
-  (let ((lexer-output (car (lexer/lex "{foo: 1.122, bar: {a: hi, b: what}}")))
+  (let ((lexer-output (car (lexer/lex "{foo: 1.122, bar: {a: hi<number<{i: am, thomas: binetruy<string>}>, string>, b: what}, hello: what}")))
         (i 0)
         (j nil))
+
+    (message "%s" (pp lexer-output))
 
     (defun parser/parse-dict-entry (dict-ast)
       (let ((type (cdr (assoc 'type (nth i lexer-output))))
@@ -88,9 +90,10 @@
         (setq dict-entry (append dict-entry
                                `((key . ,value))))
         (setq i (+ i 1))
+        (setq value (cdr (assoc 'value (nth i lexer-output))))
         (if (and (not (equal ":" value))
                  (equal counter 0))
-            (message "missing colon at %s" value))
+            (message "missing ':' ; got %s" value))
         (setq i (+ i 1))
         (setq type (cdr (assoc 'type (nth i lexer-output))))
         (setq value (cdr (assoc 'value (nth i lexer-output))))
@@ -98,26 +101,39 @@
                                `((value . ,(parser/parse-type)))))
         (append dict-ast (list dict-entry))))
 
-    (defun parser/parse-dictionary ()
-      (let ((dict-ast nil)
+    (defun parser/loop-delimeter (close separator callback pass-arg)
+      (let ((return-value nil)
             (counter 0))
         (while (equal counter 0)
           (setq i (1+ i))
-          (setq dict-ast (parser/parse-dict-entry dict-ast))
+          (if pass-arg
+              (setq return-value (funcall callback return-value))
+            (setq return-value (append return-value (funcall callback))))
           (let ((value (cdr (assoc 'value (nth i lexer-output)))))
-            (if (equal "}" value)
+            (if (equal close value)
                 (progn
                   (setq counter 1)
                   (message "closing object")))
-            (if (and (not (equal "," value))
+            (if (and (not (equal separator value))
                      (equal counter 0))
-                (message "missing comma, %s" value))
+                (message "missing '%s' ; got %s" separator value))
             (if (> i (length lexer-output))
                 (progn
-                  (message "object not formatted properly (missing '}')")
+                  (message "object not formatted properly (missing '%s')" close)
                   (setq counter 2)))))
         (setq i (+ i 1))
-        `(dict . ((entries . ,dict-ast)))))
+        return-value))
+
+
+    (defun parser/parse-dictionary ()
+      (let ((dict-ast nil)
+            (counter 0))
+        `(dict . ((entries . ,(parser/loop-delimeter "}" "," 'parser/parse-dict-entry t))))))
+
+    (defun parser/parse-generic ()
+      (let ((dict-ast nil)
+            (counter 0))
+        `(generic . ((entries . ,(parser/loop-delimeter ">" "," 'parser/parse-type nil))))))
 
     (defun parser/parse-type ()
       (let* ((current-entry (nth i lexer-output))
@@ -131,8 +147,12 @@
               (setq counter 1)
               (setq return-value (parser/parse-dictionary))))
         (if (not counter)
-            (progn (setq return-value current-value)
-                   (setq i (1+ i))))
+            (progn (setq return-value `((type . ,current-value)))
+                   (setq i (1+ i))
+                   (setq current-value (cdr (assoc 'value (nth i lexer-output))))
+                   (if (string= "<" current-value)
+                       (progn
+                         (setq return-value (append return-value (parser/parse-generic)))))))
         (list return-value)))
 
     (while (< i (length lexer-output))

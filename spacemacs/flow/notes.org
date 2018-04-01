@@ -1,5 +1,55 @@
 * Flow.el TODOs 
 
+parsing:
+  "{foo: 1.122, bar: {a: hi<number<{i: am, thomas: binetruy<string>}>, string>, b: what}, hello: what}"
+
+should output:
+  ((dict
+    (entries
+    ((key . "foo")
+      (value
+      ((type . "1.122"))))
+    ((key . "bar")
+      (value
+      (dict
+        (entries
+        ((key . "a")
+          (value
+          ((type . "hi")
+            generic
+            (entries
+            ((type . "number")
+              generic
+              (entries
+              (dict
+                (entries
+                ((key . "i")
+                  (value
+                  ((type . "am"))))
+                ((key . "thomas")
+                  (value
+                  ((type . "binetruy")
+                    generic
+                    (entries
+                    ((type . "string"))))))))))
+            ((type . "string"))))))
+        ((key . "b")
+          (value
+          ((type . "what"))))))))
+    ((key . "hello")
+      (value
+      ((type . "what")))))))
+
+
+#+begin_src emacs-lisp
+(load-file "./parser.el")
+
+(parse "hello i am thomas")
+#+end_src
+
+#+RESULTS:
+: ddhddeddlddlddodd ddidd ddaddmdd ddtddhddoddmddadds
+
 #+begin_src emacs-lisp
 (replace-regexp-in-string "\\(string\\|number\\)" "\\1hey" "number")
 (replace-regexp-in-string
