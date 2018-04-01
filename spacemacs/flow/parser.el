@@ -92,7 +92,6 @@
         (setq value (cdr (assoc 'value (nth i lexer-output))))
         (setq dict-ast (append dict-ast
                                `((value . ,(parser/parse-type)))))
-        (setq i (1+ i))
         `(,dict-ast)))
 
     (defun parser/parse-dictionary ()
@@ -103,14 +102,17 @@
           (setq dict-ast (parser/parse-dict-entry dict-ast))
           (let ((value (cdr (assoc 'value (nth i lexer-output)))))
             (if (equal "}" value)
-                (setq counter 1))
+                (progn
+                  (setq counter 1)
+                  (message "closing object")))
             (if (and (not (equal "," value))
                      (equal counter 0))
-                (message "missing semi column, %s" value))
+                (message "missing comma, %s" value))
             (if (> i (length lexer-output))
                 (progn
                   (message "object not formatted properly (missing '}')")
                   (setq counter 2)))))
+        (setq i (+ i 1))
         `(dict . ((entries . ,dict-ast)))))
 
     (defun parser/parse-type ()
@@ -125,8 +127,8 @@
               (setq counter 1)
               (setq return-value (parser/parse-dictionary))))
         (if (not counter)
-            (setq return-value current-value)
-          (setq i (1+ i)))
+            (progn (setq return-value current-value)
+                   (setq i (1+ i))))
         (list return-value)))
 
     (while (< i (length lexer-output))
@@ -136,6 +138,6 @@
 (defun parser/parse ()
   (let ((ast nil))
     (setq ast (parser/parse-lexer-output ast))
-    (message "%s" ast)))
+    (message "%s" (pp ast))))
 
 (parser/parse)
