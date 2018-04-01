@@ -84,15 +84,16 @@
 
     (defun parser/parse-dict-entry (dict-ast)
       (let ((type (cdr (assoc 'type (nth i lexer-output))))
-            (value (cdr (assoc 'value (nth i lexer-output)))))
-        (setq dict-ast (append dict-ast
+            (value (cdr (assoc 'value (nth i lexer-output))))
+            (dict-entry nil))
+        (setq dict-entry (append dict-entry
                                `((key . ,value))))
         (setq i (+ i 2))
         (setq type (cdr (assoc 'type (nth i lexer-output))))
         (setq value (cdr (assoc 'value (nth i lexer-output))))
-        (setq dict-ast (append dict-ast
+        (setq dict-entry (append dict-entry
                                `((value . ,(parser/parse-type)))))
-        `(,dict-ast)))
+        (append dict-ast (list dict-entry))))
 
     (defun parser/parse-dictionary ()
       (let ((dict-ast nil)
