@@ -1,5 +1,56 @@
 * Flow.el TODOs 
 
+exact object type:
+#+begin_src javascript
+type Success = {| success: true, value: boolean |}
+#+end_src
+
+object type:
+#+begin_src javascript
+type Success = { success: true, value: boolean }
+#+end_src
+
+object immutable key:
+#+begin_src javascript
+type Success = { 
+  +success: true, 
+}
+#+end_src
+
+object optional key:
+#+begin_src javascript
+type Success = { 
+  success?: true, 
+}
+#+end_src
+
+union type:
+#+begin_src javascript
+type Success =  number | string
+#+end_src
+
+intersection type:
+#+begin_src javascript
+type Success =  number & string
+#+end_src
+
+opaque type:
+#+begin_src javascript
+opaque type Success =  number | string
+#+end_src
+
+tuple type:
+#+begin_src javascript
+type Success = [number, string, string]
+#+end_src
+
+interface type:
+#+begin_src javascript
+interface Serializable {
+    serialize(): string;
+}
+#+end_src
+
 parsing:
   "{foo: 1.122, bar: {a: hi<number<{i: am, thomas: binetruy<string>}>, string>, b: what}, hello: what}"
 
@@ -99,6 +150,15 @@ should output:
 #+RESULTS:
 : yo
 
+parseType():
+  
+
+parseObject():
+  parseKey()
+  if value:
+    then parseObject()
+  else:
+    parseType()
 
 ** DONE projectile-find-type-file
    CLOSED: [2018-03-07 Wed 22:12]
