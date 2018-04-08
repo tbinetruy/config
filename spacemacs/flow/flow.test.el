@@ -66,5 +66,14 @@
     (parser-tests/check-parser str ast)))
 
 (ert-deftest lexer-tests/is-digit ()
-  (should (equal (lexer/is-digit 50) 0))
-  (should (equal (lexer/is-digit 5) nil)))
+  (should (equal (lexer/is-digit (string-to-char "2")) 0))
+  (should (equal (lexer/is-digit (string-to-char "*")) nil)) ; special char not allowed
+  (should (equal (lexer/is-digit (string-to-char "b")) nil))) ; letters not allowed
+
+(ert-deftest lexer-tests/is-type ()
+  (should (equal (lexer/is-type (string-to-char "2")) nil)) ; cannot start by number
+  (should (equal (lexer/is-type (string-to-char "$")) 0)) ; allowed special char
+  (should (equal (lexer/is-type (string-to-char "_")) 0)) ; allowed special char
+  (should (equal (lexer/is-type (string-to-char "&")) nil)) ; not an allowed special char
+  (should (equal (lexer/is-type (string-to-char "s")) 0))) ; can start with letter
+
