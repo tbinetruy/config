@@ -76,8 +76,8 @@
     (list output)))
 
 
-(defun parser/parse-lexer-output (ast)
-  (let ((lexer-output (car (lexer/lex "{foo: 1.122, bar: {a: hi<number<{i: am, thomas: binetruy<string>}>, string>, b: what}, hello: what}")))
+(defun parser/parse-lexer-output (ast str)
+  (let ((lexer-output (car (lexer/lex str)))
         (i 0)
         (j nil))
 
@@ -122,7 +122,7 @@
                   (message "object not formatted properly (missing '%s')" close)
                   (setq counter 2)))))
         (setq i (+ i 1))
-        return-value))
+        (list return-value)))
 
 
     (defun parser/parse-dictionary ()
@@ -152,16 +152,18 @@
                    (setq current-value (cdr (assoc 'value (nth i lexer-output))))
                    (if (string= "<" current-value)
                        (progn
-                         (setq return-value (append return-value (parser/parse-generic)))))))
+                         (setq return-value (append return-value (list (parser/parse-generic))))))))
         (list return-value)))
 
     (while (< i (length lexer-output))
       (setq ast (append ast (parser/parse-type))))
     ast))
 
-(defun parser/parse ()
+(defun parser/parse (str)
   (let ((ast nil))
-    (setq ast (parser/parse-lexer-output ast))
+    (setq ast (parser/parse-lexer-output ast str))
     (message "%s" (pp ast))))
 
-(parser/parse)
+(parser/parse "{foo: 1.122, bar: {a: hi<number<{i: am, thomas: binetruy<string>}>, string>, b: what}, hello: what}")
+
+(provide 'parser)
