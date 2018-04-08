@@ -3,7 +3,7 @@
 
 (defun lexer/read-digit ()
   (let ((current-point (point))
-        (match-end-pos (re-search-forward "\\([0-9]*\.\\)?[0-9]+"))
+        (match-end-pos (re-search-forward "\\([0-9]*\\.\\)?[0-9]+"))
         (read-value ""))
     (if match-end-pos
         (progn
@@ -73,11 +73,11 @@
         (lexer/top-level-parsing)
         (forward-char 1))
       (setq input (buffer-string)))
-    (list output)))
+    output))
 
 
 (defun parser/parse-lexer-output (ast str)
-  (let ((lexer-output (car (lexer/lex str)))
+  (let ((lexer-output (lexer/lex str))
         (i 0)
         (j nil))
 
