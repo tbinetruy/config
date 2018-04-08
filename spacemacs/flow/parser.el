@@ -14,11 +14,11 @@
       (nil))))
 
 (defun lexer/is-type (c)
-  (string-match "[a-zA-Z0-9\$]+" (format "%c" c)))
+  (string-match "[a-zA-Z$_]+" (format "%c" c)))
 
 (defun lexer/read-type ()
   (let ((current-point (point))
-        (match-end-pos (re-search-forward "[a-zA-Z0-9]+"))
+        (match-end-pos (re-search-forward "[a-zA-z$_][a-zA-Z0-9$_]*"))
         (read-value ""))
     (if match-end-pos
         (progn
