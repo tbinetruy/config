@@ -128,7 +128,8 @@
     (defun parser/parse-dictionary ()
       (let ((dict-ast nil)
             (counter 0))
-        `(dict . ((entries . ,(parser/loop-delimeter "}" "," 'parser/parse-dict-entry t))))))
+        `((type . "dict")
+          (entries . ,(parser/loop-delimeter "}" "," 'parser/parse-dict-entry t)))))
 
     (defun parser/parse-generic ()
       (let ((dict-ast nil)
