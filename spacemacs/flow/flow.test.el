@@ -1,7 +1,7 @@
 (load-file "./parser.el")
 
 (defun parser-tests/check-parser (str ast)
-  (should (equal (parser/parse str) (message "%s" (pp ast)))))
+  (should (equal (parser/parse str) ast)))
 
 (ert-deftest parser-tests/single-key-dict ()
   (let ((str "{ foo: 1.122 }")

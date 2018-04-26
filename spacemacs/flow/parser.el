@@ -81,8 +81,6 @@
         (i 0)
         (j nil))
 
-    (message "%s" (pp lexer-output))
-
     (defun parser/parse-dict-entry (dict-ast)
       (let ((type (cdr (assoc 'type (nth i lexer-output))))
             (value (cdr (assoc 'value (nth i lexer-output))))
@@ -163,8 +161,17 @@
 (defun parser/parse (str)
   (let ((ast nil))
     (setq ast (parser/parse-lexer-output ast str))
-    (message "%s" (pp ast))))
+    ast))
 
-(parser/parse "{foo: 1.122, bar: {a: hi<number<{i: am, thomas: binetruy<string>}>, string>, b: what}, hello: what}")
+(defun flow-eldoc/parse-type (str)
+  (let* ((ast (car (parser/parse str)))
+         (output "")
+         (type (cdr (assoc 'type ast))))
+    (if (equal type "dict")
+        ()
+      nil)
+    (pp ast)))
+
+(flow-eldoc/parse-type "{foo: 1.122, bar: yo}")
 
 (provide 'parser)
