@@ -157,6 +157,8 @@
                                         (value . ,current-value)))
                    (setq i (1+ i))
                    (setq current-value (cdr (assoc 'value (nth i lexer-output))))
+
+                   ; operators on previous type
                    (if (string= "<" current-value)
                        (progn
                          (setq return-value (append return-value (list (parser/parse-generic))))))

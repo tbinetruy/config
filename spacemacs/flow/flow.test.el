@@ -163,6 +163,7 @@
   (should (equal (lexer/is-special-char (string-to-char ",")) 0))
   (should (equal (lexer/is-special-char (string-to-char "[")) 0))
   (should (equal (lexer/is-special-char (string-to-char "]")) 0))
+  (should (equal (lexer/is-special-char (string-to-char "?")) 0))
   (should (equal (lexer/is-special-char (string-to-char "s")) nil)))
 
 (ert-deftest lexer-tests/lex-special-char ()
