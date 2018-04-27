@@ -117,7 +117,6 @@
                 (progn
                   (message "object not formatted properly (missing '%s')" close)
                   (setq counter 2)))))
-        (setq i (+ i 1))
         (list return-value)))
 
 
@@ -151,7 +150,9 @@
                  (not counter))
             (progn
               (setq counter 1)
-              (setq return-value (parser/parse-dictionary))))
+              (setq return-value (parser/parse-dictionary))
+              (setq i (1+ i))
+              (setq current-value (cdr (assoc 'value (nth i lexer-output))))))
         (if (not counter)
             (progn (setq return-value `((type . "name")
                                         (value . ,current-value)))
@@ -161,19 +162,23 @@
                    ; operators on previous type
                    (if (string= "<" current-value)
                        (progn
-                         (setq return-value (append return-value (list (parser/parse-generic))))))
+                         (setq return-value (append return-value (list (parser/parse-generic))))
+                         (setq i (+ 1 i))
+                         (setq current-value (cdr (assoc 'value (nth i lexer-output))))))
                    (if (string= "&" current-value)
                        (progn
                          (setq i (1+ i))
                          (setq return-value (append return-value `((intersection . ,(parser/parse-type)))))))
                    (if (string= "[" current-value)
                        (progn
-                         (setq i (1+ i))
                          (setq return-value (append return-value `((is-array . ,t))))
                          (setq i (1+ i))
                          (setq current-value (cdr (assoc 'value (nth i lexer-output))))
                          (if (not (string= "]" current-value))
-                             (message "array not closed"))))
+                             (message "array not closed")
+                           (progn
+                             (setq i (1+ i))
+                             (setq current-value (cdr (assoc 'value (nth i lexer-output))))))))
                    (if (string= "|" current-value)
                        (progn
                          (setq i (1+ i))
