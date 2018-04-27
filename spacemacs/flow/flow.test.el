@@ -30,6 +30,15 @@
                 (is-array . t)))))
     (parser-tests/check-parser str ast)))
 
+(ert-deftest parser-tests/dict-array-type ()
+  (let ((str "{foo: bar}[]")
+        (ast '(((type . "dict")
+                (entries (((key . "foo")
+                           (value ((type . "name")
+                                   (value . "bar"))))))
+                (is-array . t)))))
+    (parser-tests/check-parser str ast)))
+
 (ert-deftest parser-tests/generic-array-type ()
   (let ((str "foo<bar>[]")
         (ast '(((type . "name")

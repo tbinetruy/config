@@ -157,32 +157,32 @@
             (progn (setq return-value `((type . "name")
                                         (value . ,current-value)))
                    (setq i (1+ i))
-                   (setq current-value (cdr (assoc 'value (nth i lexer-output))))
+                   (setq current-value (cdr (assoc 'value (nth i lexer-output))))))
 
-                   ; operators on previous type
-                   (if (string= "<" current-value)
-                       (progn
-                         (setq return-value (append return-value (list (parser/parse-generic))))
-                         (setq i (+ 1 i))
-                         (setq current-value (cdr (assoc 'value (nth i lexer-output))))))
-                   (if (string= "&" current-value)
-                       (progn
-                         (setq i (1+ i))
-                         (setq return-value (append return-value `((intersection . ,(parser/parse-type)))))))
-                   (if (string= "[" current-value)
-                       (progn
-                         (setq return-value (append return-value `((is-array . ,t))))
-                         (setq i (1+ i))
-                         (setq current-value (cdr (assoc 'value (nth i lexer-output))))
-                         (if (not (string= "]" current-value))
-                             (message "array not closed")
-                           (progn
-                             (setq i (1+ i))
-                             (setq current-value (cdr (assoc 'value (nth i lexer-output))))))))
-                   (if (string= "|" current-value)
-                       (progn
-                         (setq i (1+ i))
-                         (setq return-value (append return-value `((union . ,(parser/parse-type)))))))))
+                                        ; operators on previous type
+        (if (string= "<" current-value)
+            (progn
+              (setq return-value (append return-value (list (parser/parse-generic))))
+              (setq i (+ 1 i))
+              (setq current-value (cdr (assoc 'value (nth i lexer-output))))))
+        (if (string= "&" current-value)
+            (progn
+              (setq i (1+ i))
+              (setq return-value (append return-value `((intersection . ,(parser/parse-type)))))))
+        (if (string= "[" current-value)
+            (progn
+              (setq return-value (append return-value `((is-array . ,t))))
+              (setq i (1+ i))
+              (setq current-value (cdr (assoc 'value (nth i lexer-output))))
+              (if (not (string= "]" current-value))
+                  (message "array not closed")
+                (progn
+                  (setq i (1+ i))
+                  (setq current-value (cdr (assoc 'value (nth i lexer-output))))))))
+        (if (string= "|" current-value)
+            (progn
+              (setq i (1+ i))
+              (setq return-value (append return-value `((union . ,(parser/parse-type)))))))
         (if is-optional-type
             (setq return-value (append return-value '((is-optional . t)))))
 
