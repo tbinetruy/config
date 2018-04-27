@@ -167,6 +167,9 @@
              (counter nil)
              (is-optional-type nil))
 
+        ;;;; Operators on upcoming type
+
+        ; Maybe type
         (if (and (equal current-value "?"))
             (progn
               (setq i (1+ i))
@@ -174,6 +177,9 @@
               (setq is-optional-type t))
           nil)
 
+        ;;;; Operators on current type
+
+        ; Dict
         (if (and (equal current-value "{")
                  (not counter))
             (progn
@@ -188,22 +194,29 @@
               (setq counter 1)
               (setq return-value (parser/parse-function))))
 
+        ; Default
         (if (not counter)
             (progn (setq return-value `((type . "name")
                                         (value . ,current-value)))
                    (setq i (1+ i))
                    (setq current-value (cdr (assoc 'value (nth i lexer-output))))))
 
-                                        ; operators on previous type
+        ;;;; Operators on previous type
+
+        ; Generics
         (if (string= "<" current-value)
             (progn
               (setq return-value (append return-value (list (parser/parse-generic))))
               (setq i (+ 1 i))
               (setq current-value (cdr (assoc 'value (nth i lexer-output))))))
+
+        ; Union
         (if (string= "&" current-value)
             (progn
               (setq i (1+ i))
               (setq return-value (append return-value `((intersection . ,(parser/parse-type)))))))
+
+        ; Array
         (if (string= "[" current-value)
             (progn
               (setq return-value (append return-value `((is-array . ,t))))
@@ -214,10 +227,14 @@
                 (progn
                   (setq i (1+ i))
                   (setq current-value (cdr (assoc 'value (nth i lexer-output))))))))
+
+        ; Intersection
         (if (string= "|" current-value)
             (progn
               (setq i (1+ i))
               (setq return-value (append return-value `((union . ,(parser/parse-type)))))))
+
+        ; Maybe
         (if is-optional-type
             (setq return-value (append return-value '((is-optional . t)))))
 
