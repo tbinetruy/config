@@ -29,7 +29,7 @@
       (nil))))
 
 (defun lexer/is-special-char (c)
-  (string-match "[{}\\:=<>,|&]" (format "%c" c)))
+  (string-match "[{}\\:=<>,|&?]" (format "%c" c)))
 
 (defun lexer/read-special-char ()
   (let ((current-point (point))
@@ -139,7 +139,16 @@
              (current-type (cdr (assoc 'type current-entry)))
              (current-value (cdr (assoc 'value current-entry)))
              (return-value nil)
-             (counter nil))
+             (counter nil)
+             (is-optional-type nil))
+
+        (if (and (equal current-value "?"))
+            (progn
+              (setq i (1+ i))
+              (setq current-value (cdr (assoc 'value (nth i lexer-output))))
+              (setq is-optional-type t))
+          nil)
+
         (if (and (equal current-value "{")
                  (not counter))
             (progn
@@ -161,6 +170,9 @@
                        (progn
                          (setq i (1+ i))
                          (setq return-value (append return-value `((union . ,(parser/parse-type)))))))))
+        (if is-optional-type
+            (setq return-value (append return-value '((is-optional . t)))))
+
         (list return-value)))
 
     (while (< i (length lexer-output))

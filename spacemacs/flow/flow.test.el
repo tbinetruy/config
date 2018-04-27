@@ -23,6 +23,23 @@
                                 (value . "Type3")))))))))
     (parser-tests/check-parser str ast)))
 
+(ert-deftest parser-tests/maybe-type ()
+  (let ((str "?Type1")
+        (ast '(((type . "name")
+                (value . "Type1")
+                (is-optional . t)))))
+    (parser-tests/check-parser str ast)))
+
+(ert-deftest parser-tests/maybe-type-dict-key ()
+  (let ((str "{ foo: ?bar }")
+        (ast '(((type . "dict")
+                (entries (((key . "foo")
+                           (value ((type . "name")
+                                   (value . "bar")
+                                   (is-optional . t))))))))))
+    (message "%s" ast)
+    (parser-tests/check-parser str ast)))
+
 (ert-deftest parser-tests/single-key-dict ()
   (let ((str "{ foo: 1.122 }")
         (ast '(((type . "dict")
@@ -140,7 +157,7 @@
   (should (equal (lexer/is-special-char (string-to-char "s")) nil)))
 
 (ert-deftest lexer-tests/lex-special-char ()
-  (let ((str "{}:=<>,|&")
+  (let ((str "{}:=<>,|&?")
         (lexer-output '(((type . "special-char")
                          (value . "{"))
                         ((type . "special-char")
@@ -158,7 +175,9 @@
                         ((type . "special-char")
                          (value . "|"))
                         ((type . "special-char")
-                         (value . "&")))))
+                         (value . "&"))
+                        ((type . "special-char")
+                         (value . "?")))))
     (should (equal (lexer/lex str) lexer-output))))
 
 (ert-deftest lexer-tests/lex-words ()
