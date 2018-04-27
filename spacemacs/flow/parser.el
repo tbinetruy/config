@@ -29,7 +29,7 @@
       (nil))))
 
 (defun lexer/is-special-char (c)
-  (string-match "[][{}\\:=<>,|&?+]" (format "%c" c)))
+  (string-match "[]()[{}\\:=<>,|&?+]" (format "%c" c)))
 
 (defun lexer/read-special-char ()
   (let ((current-point (point))
@@ -139,6 +139,26 @@
             (counter 0))
         `(generic . ((entries . ,(parser/loop-delimeter ">" "," 'parser/parse-type nil))))))
 
+    (defun parser/parse-function ()
+      (let ((func-ast nil)
+            (return-value `((type . "function")
+                            ((arguments . ,(parser/loop-delimeter ")" "," 'parser/parse-type nil))))))
+        (setq i (1+ i))
+        (message "%s" current-value)
+        (setq current-value (cdr (assoc 'value (nth i lexer-output))))
+        (if (string= "=" current-value)
+          (progn
+            (setq i (1+ i))
+            (setq current-value (cdr (assoc 'value (nth i lexer-output))))
+            (if (string= ">" current-value)
+                (progn
+                  (setq i (1+ i))
+                  (setq current-value (cdr (assoc 'value (nth i lexer-output))))
+                  (setq return-value (append return-value `((return-value . ,(parser/parse-type))))))
+              (message "Function arrow miss formatted at %s" i)))
+          (message "Missing function arrow at %s" i))
+        return-value))
+
     (defun parser/parse-type ()
       (let* ((current-entry (nth i lexer-output))
              (current-type (cdr (assoc 'type current-entry)))
@@ -161,6 +181,13 @@
               (setq return-value (parser/parse-dictionary))
               (setq i (1+ i))
               (setq current-value (cdr (assoc 'value (nth i lexer-output))))))
+
+        (if (and (equal current-value "(")
+                 (not counter))
+            (progn
+              (setq counter 1)
+              (setq return-value (parser/parse-function))))
+
         (if (not counter)
             (progn (setq return-value `((type . "name")
                                         (value . ,current-value)))

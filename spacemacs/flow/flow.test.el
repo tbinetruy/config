@@ -23,6 +23,19 @@
                                 (value . "Type3")))))))))
     (parser-tests/check-parser str ast)))
 
+(ert-deftest parser-tests/function-type ()
+  (let ((str "(number, string) => boolean")
+        (ast '(((type . "function")
+                ((arguments
+                  (((type . "name")
+                    (value . "number"))
+                   ((type . "name")
+                    (value . "string")))))
+                (return-value
+                 ((type . "name")
+                  (value . "boolean")))))))
+    (parser-tests/check-parser str ast)))
+
 (ert-deftest parser-tests/array-type ()
   (let ((str "Type[]")
         (ast '(((type . "name")
@@ -202,10 +215,12 @@
   (should (equal (lexer/is-special-char (string-to-char "]")) 0))
   (should (equal (lexer/is-special-char (string-to-char "?")) 0))
   (should (equal (lexer/is-special-char (string-to-char "+")) 0))
+  (should (equal (lexer/is-special-char (string-to-char "(")) 0))
+  (should (equal (lexer/is-special-char (string-to-char ")")) 0))
   (should (equal (lexer/is-special-char (string-to-char "s")) nil)))
 
 (ert-deftest lexer-tests/lex-special-char ()
-  (let ((str "[]{}:=<>,|&?+")
+  (let ((str "[]{}:=<>,|&?+()")
         (lexer-output '(((type . "special-char")
                          (value . "["))
                         ((type . "special-char")
@@ -231,7 +246,11 @@
                         ((type . "special-char")
                          (value . "?"))
                         ((type . "special-char")
-                         (value . "+")))))
+                         (value . "+"))
+                        ((type . "special-char")
+                         (value . "("))
+                        ((type . "special-char")
+                         (value . ")")))))
     (should (equal (lexer/lex str) lexer-output))))
 
 (ert-deftest lexer-tests/lex-words ()
