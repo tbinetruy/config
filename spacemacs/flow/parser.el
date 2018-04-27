@@ -93,8 +93,6 @@
                  (equal counter 0))
             (message "missing ':' ; got %s" value))
         (setq i (+ i 1))
-        (setq type (cdr (assoc 'type (nth i lexer-output))))
-        (setq value (cdr (assoc 'value (nth i lexer-output))))
         (setq dict-entry (append dict-entry
                                `((value . ,(parser/parse-type)))))
         (append dict-ast (list dict-entry))))
