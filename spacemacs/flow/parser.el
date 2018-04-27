@@ -29,7 +29,7 @@
       (nil))))
 
 (defun lexer/is-special-char (c)
-  (string-match "[{}\\:=<>,|&?]" (format "%c" c)))
+  (string-match "[\]\[{}\\:=<>,|&?]" (format "%c" c)))
 
 (defun lexer/read-special-char ()
   (let ((current-point (point))
@@ -164,6 +164,14 @@
                        (progn
                          (setq i (1+ i))
                          (setq return-value (append return-value `((intersection . ,(parser/parse-type)))))))
+                   (if (string= "[" current-value)
+                       (progn
+                         (setq i (1+ i))
+                         (setq return-value (append return-value `((is-array . ,t))))
+                         (setq i (1+ i))
+                         (setq current-value (cdr (assoc 'value (nth i lexer-output))))
+                         (if (not (string= "]" current-value))
+                             (message "array not closed"))))
                    (if (string= "|" current-value)
                        (progn
                          (setq i (1+ i))
