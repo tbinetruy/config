@@ -93,6 +93,16 @@
                                    (value . "string"))))))))))
     (parser-tests/check-parser str ast)))
 
+(ert-deftest parser-tests/immutable-key-dict ()
+  (let ((str "{ +foo: bar }")
+        (ast '(((type . "dict")
+                (entries (((key . "foo")
+                           (value ((type . "name")
+                                   (value . "bar")))
+                           (is-immutable . t))))))))
+    (parser-tests/check-parser str ast)))
+
+
 (ert-deftest parser-tests/nested-dict ()
   (let ((str "{ foo: 1.122, bar: { a: Type1, b: Type2 } }")
         (ast '(((type . "dict")

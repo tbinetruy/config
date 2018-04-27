@@ -84,7 +84,13 @@
     (defun parser/parse-dict-entry (dict-ast)
       (let ((type (cdr (assoc 'type (nth i lexer-output))))
             (value (cdr (assoc 'value (nth i lexer-output))))
-            (dict-entry nil))
+            (dict-entry nil)
+            (is-immutable nil))
+        (if (string= "+" value)
+            (progn
+              (setq is-immutable t)
+              (setq i (1+ i))
+              (setq value (cdr (assoc 'value (nth i lexer-output))))))
         (setq dict-entry (append dict-entry
                                `((key . ,value))))
         (setq i (+ i 1))
@@ -95,6 +101,8 @@
         (setq i (+ i 1))
         (setq dict-entry (append dict-entry
                                `((value . ,(parser/parse-type)))))
+        (if is-immutable
+            (setq dict-entry (append dict-entry `((is-immutable . ,t)))))
         (append dict-ast (list dict-entry))))
 
     (defun parser/loop-delimeter (close separator callback pass-arg)
