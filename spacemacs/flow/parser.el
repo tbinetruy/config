@@ -29,7 +29,7 @@
       (nil))))
 
 (defun lexer/is-special-char (c)
-  (string-match "[\]\[{}\\:=<>,|&?]" (format "%c" c)))
+  (string-match "[][{}\\:=<>,|&?+]" (format "%c" c)))
 
 (defun lexer/read-special-char ()
   (let ((current-point (point))
