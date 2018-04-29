@@ -159,6 +159,22 @@
           (message "Missing function arrow at %s" i))
         return-value))
 
+    (defun parser/get-matching-closing-bracket (j)
+      (let* ((current-value (cdr (assoc 'value (nth j lexer-output)))))
+        (if (not (string= "(" current-value))
+            (message "Not on an opening bracket character, got %s" current-value)
+          (while (not (string= ")" current-value))
+            (progn
+              (setq j (1+ j))
+              (setq current-value (cdr (assoc 'value (nth j lexer-output))))
+              (message "%s" current-value)
+              (if (string= "(" current-value)
+                  (progn
+                    (message "yoooo")
+                    (setq j (parser/get-matching-closing-bracket j))
+                nil))))
+          j)))
+
     (defun parser/parse-type ()
       (let* ((current-entry (nth i lexer-output))
              (current-type (cdr (assoc 'type current-entry)))

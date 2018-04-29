@@ -1,5 +1,14 @@
 (load-file "./parser.el")
 
+(ert-deftest parser-tests/get-matching-closing-brackets ()
+  (let ((lexer-output (lexer/lex "((foo bar) baz)")))
+    (should (equal
+             (parser/get-matching-closing-bracket 0)
+             6))
+    (should (equal
+             (parser/get-matching-closing-bracket 1)
+             4))))
+
 (defun parser-tests/check-parser (str ast)
   (should (equal (parser/parse str) ast)))
 
