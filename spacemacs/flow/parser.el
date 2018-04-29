@@ -181,12 +181,8 @@
             (progn
               (setq j (1+ j))
               (setq current-value (cdr (assoc 'value (nth j lexer-output))))
-              (message "%s" current-value)
               (if (string= "(" current-value)
-                  (progn
-                    (message "yoooo")
-                    (setq j (parser/get-matching-closing-bracket j))
-                nil))))
+                  (setq j (parser/get-matching-closing-bracket j)))))
           j)))
 
     (defun parser/parse-type ()
