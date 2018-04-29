@@ -200,7 +200,7 @@
         ;;;; Operators on upcoming type
 
         ; Maybe type
-        (if (and (equal current-value "?"))
+        (if (equal current-value "?")
             (progn
               (setq i (1+ i))
               (setq current-value (cdr (assoc 'value (nth i lexer-output))))
