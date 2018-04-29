@@ -9,8 +9,48 @@
              (parser/get-matching-closing-bracket 1)
              4))))
 
+(ert-deftest parser-tests/is-function ()
+  (let ((lexer-output (lexer/lex "(number) => void"))
+        (i 0))
+    (should (equal
+             (parser/is-function)
+             t))))
+
+(ert-deftest parser-tests/is-not-function ()
+  (let ((lexer-output (lexer/lex "(number)"))
+        (i 0))
+    (should (equal
+             (parser/is-function)
+             nil))))
+
 (defun parser-tests/check-parser (str ast)
   (should (equal (parser/parse str) ast)))
+
+(ert-deftest parser-tests/grouping-arrays-type ()
+  (let ((str "(number | void[])[]")
+        (ast '(((type . "name")
+                (value . "number")
+                (union
+                 ((type . "name")
+                  (value . "void")
+                  (is-array . t)))
+                (is-array . t)))))
+    (parser-tests/check-parser str ast)))
+
+(ert-deftest parser-tests/function-array-type ()
+  (let ((str "((number) => void[])[]")
+        (ast '(((type . "function")
+                (arguments
+                 (((key)
+                   (value
+                    ((type . "name")
+                     (value . "number"))))))
+                (return-value
+                 ((type . "name")
+                  (value . "void")
+                  (is-array . t)))
+                (is-array . t)))))
+    (parser-tests/check-parser str ast)))
 
 (ert-deftest parser-tests/union-type ()
   (let ((str "Type1 | Type2 | Type3")

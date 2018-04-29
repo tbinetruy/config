@@ -185,15 +185,47 @@
                   (setq j (parser/get-matching-closing-bracket j)))))
           j)))
 
-    (defun parser/parse-type ()
+    (defun parser/is-function ()
+      (let* ((j (parser/get-matching-closing-bracket i))
+            (current-value (alist-get 'value (nth j lexer-output))))
+        (setq j (1+ j)
+              current-value (alist-get 'value (nth j lexer-output)))
+        (if (string= "=" current-value)
+            (progn
+              (setq j (1+ j)
+                    current-value (alist-get 'value (nth j lexer-output)))
+              (if (string= ">" current-value)
+                  t
+                nil))
+          nil)))
+
+    (defun parser/parse-group ()
+      (let* ((closing-pos (parser/get-matching-closing-bracket i))
+             ;; excludes brackets
+             (group-lex (subseq lexer-output (+ i 1) (- closing-pos 1)))
+             (return-value (car (parser/parse-lexer-output nil nil group-lex))))
+        ;; skip closing bracket
+        (setq i (1+ closing-pos))
+        return-value))
+
+    (defun parser/parse-type (&optional closing-pos)
       (let* ((current-entry (nth i lexer-output))
              (current-type (cdr (assoc 'type current-entry)))
              (current-value (cdr (assoc 'value current-entry)))
              (return-value nil)
              (counter nil)
-             (is-optional-type nil))
+             (is-optional-type nil)
+             (closing-pos (or closing-pos
+                              (length lexer-output))))
 
         ;;;; Operators on upcoming type
+
+        ; Grouping
+        ; if. matching closing bracket leads to function
+        ;   true. parse function
+        ;   false. call parse-type
+        ; always ignore closing brackets (could also check for matching opening bracket)
+
 
         ; Maybe type
         (if (equal current-value "?")
@@ -216,9 +248,14 @@
 
         (if (and (equal current-value "(")
                  (not counter))
-            (progn
-              (setq counter 1)
-              (setq return-value (parser/parse-function))))
+            (let ((is-function (parser/is-function)))
+              (progn
+               (setq counter 1)
+               (if is-function
+                   (setq return-value (parser/parse-function))
+                 (progn
+                   (setq return-value (parser/parse-group))
+                   (setq current-value (alist-get 'value (nth i lexer-output))))))))
 
         ; Default
         (if (not counter)
