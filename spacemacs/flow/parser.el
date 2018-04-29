@@ -139,12 +139,26 @@
             (counter 0))
         `(generic . ((entries . ,(parser/loop-delimeter ">" "," 'parser/parse-type nil))))))
 
+    (defun parser/parse-function-args ()
+      (let ((arg-ast nil)
+            (is-named-arg nil)
+            (current-value (cdr (assoc 'value (nth i lexer-output))))
+            (next-value (cdr (assoc 'value (nth (1+ i) lexer-output))))
+            (return-value '((key nil)
+                            (value nil))))
+        ;; check if next value is colon
+        (if (string= ":" next-value)
+            (setq return-value (parser/parse-dict-entry '()))
+          (setq return-value `(((key . nil)
+                                (value . ,(parser/parse-type))))))
+        return-value))
+
     (defun parser/parse-function ()
       (let ((func-ast nil)
+            (current-value (cdr (assoc 'value (nth i lexer-output))))
             (return-value `((type . "function")
-                            ((arguments . ,(parser/loop-delimeter ")" "," 'parser/parse-type nil))))))
+                            (arguments . ,(parser/loop-delimeter ")" "," 'parser/parse-function-args nil)))))
         (setq i (1+ i))
-        (message "%s" current-value)
         (setq current-value (cdr (assoc 'value (nth i lexer-output))))
         (if (string= "=" current-value)
           (progn

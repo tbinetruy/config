@@ -32,14 +32,52 @@
                                 (value . "Type3")))))))))
     (parser-tests/check-parser str ast)))
 
-(ert-deftest parser-tests/function-type ()
+(ert-deftest parser-tests/function-type-unamed-args ()
   (let ((str "(number, string) => boolean")
         (ast '(((type . "function")
-                ((arguments
-                  (((type . "name")
-                    (value . "number"))
-                   ((type . "name")
-                    (value . "string")))))
+                (arguments
+                 (((key)
+                   (value
+                    ((type . "name")
+                     (value . "number"))))
+                  ((key)
+                   (value
+                    ((type . "name")
+                     (value . "string"))))))
+                (return-value
+                 ((type . "name")
+                  (value . "boolean")))))))
+    (parser-tests/check-parser str ast)))
+
+(ert-deftest parser-tests/function-type-mixed-args ()
+  (let ((str "(number, foo: string) => boolean")
+        (ast '(((type . "function")
+                (arguments
+                 (((key)
+                   (value
+                    ((type . "name")
+                     (value . "number"))))
+                  ((key . "foo")
+                   (value
+                    ((type . "name")
+                     (value . "string"))))))
+                (return-value
+                 ((type . "name")
+                  (value . "boolean")))))))
+    (parser-tests/check-parser str ast)))
+
+(ert-deftest parser-tests/function-type-names-args ()
+  (let ((str "(arg1: number, arg2: string) => boolean")
+        (ast '(((type . "function")
+                (arguments
+                 (((key . "arg1")
+                   (value
+                    ((type . "name")
+                     (value . "number"))))
+                  ((key . "arg2")
+                   (value
+                    ((type . "name")
+                     (value . "string"))))))
                 (return-value
                  ((type . "name")
                   (value . "boolean")))))))
