@@ -76,8 +76,8 @@
     output))
 
 
-(defun parser/parse-lexer-output (ast str)
-  (let ((lexer-output (lexer/lex str))
+(defun parser/parse-lexer-output (ast str &optional lexer-output)
+  (let ((lexer-output (or lexer-output (lexer/lex str)))
         (i 0)
         (j nil))
 
