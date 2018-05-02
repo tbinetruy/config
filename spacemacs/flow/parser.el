@@ -107,17 +107,32 @@
 
     (defun parser/loop-delimeter (close separator callback pass-arg)
       (let ((return-value nil)
-            (counter 0))
+            (counter 0)            ; main loop
+            (close-counter 0)
+            (close-chars (split-string close))     ; for handling multiple closing chars
+            (fail nil))
         (while (equal counter 0)
           (setq i (1+ i))
           (if pass-arg
               (setq return-value (funcall callback return-value))
             (setq return-value (append return-value (funcall callback))))
-          (let ((value (cdr (assoc 'value (nth i lexer-output)))))
-            (if (equal close value)
+          (let ((value (alist-get 'value (nth i lexer-output))))
+            (if (equal (nth close-counter close-chars) value)
                 (progn
-                  (setq counter 1)
-                  (message "closing object")))
+                  (while (and (< close-counter (length close-chars))
+                              (equal fail nil))
+                    (progn
+                      (let* ((j i)
+                             (current-value-bis (alist-get 'value (nth j lexer-output)))
+                             (current-closing-char (nth close-counter close-chars)))
+                        (if (string= current-value-bis current-closing-char)
+                            (setq j (1+ j)
+                                  close-counter (1+ close-counter))
+                          (setq fail t)))))
+                  (if (equal fail nil)
+                      (setq counter 1
+                            i (- i (- (length close-chars) 1)))
+                    nil)))
             (if (and (not (equal separator value))
                      (equal counter 0))
                 (message "missing '%s' ; got %s" separator value))
