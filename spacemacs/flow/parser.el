@@ -122,7 +122,7 @@
                   (while (and (< close-counter (length close-chars))
                               (equal fail nil))
                     (progn
-                      (let* ((j i)
+                      (let* ((j (+ i close-counter))
                              (current-value-bis (alist-get 'value (nth j lexer-output)))
                              (current-closing-char (nth close-counter close-chars)))
                         (if (string= current-value-bis current-closing-char)
@@ -131,7 +131,7 @@
                           (setq fail t)))))
                   (if (equal fail nil)
                       (setq counter 1
-                            i (- i (- (length close-chars) 1)))
+                            i (+ i (- (length close-chars) 1)))
                     nil)))
             (if (and (not (equal separator value))
                      (equal counter 0))
@@ -145,9 +145,20 @@
 
     (defun parser/parse-dictionary ()
       (let ((dict-ast nil)
-            (counter 0))
+            (counter 0)
+            (is-special nil))
+        (if (string= "|" (alist-get 'value (nth (1+ i) lexer-output)))
+            (progn
+              (message "yo")
+              (setq is-special t
+                    i (1+ i)))
+          nil)
         `((type . "dict")
-          (entries . ,(parser/loop-delimeter "}" "," 'parser/parse-dict-entry t)))))
+          (entries . ,(parser/loop-delimeter
+                       (if is-special "| }" "}")
+                       ","
+                       'parser/parse-dict-entry
+                       t)))))
 
     (defun parser/parse-generic ()
       (let ((dict-ast nil)
@@ -307,7 +318,9 @@
                   (setq current-value (cdr (assoc 'value (nth i lexer-output))))))))
 
         ; Intersection
-        (if (string= "|" current-value)
+        (if (and
+             (string= "|" current-value)
+             (not (string= "}" (alist-get 'value (nth (1+ i) lexer-output)))))
             (progn
               (setq i (1+ i))
               (setq return-value (append return-value `((union . ,(parser/parse-type)))))))
