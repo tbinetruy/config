@@ -146,19 +146,22 @@
     (defun parser/parse-dictionary ()
       (let ((dict-ast nil)
             (counter 0)
-            (is-special nil))
+            (is-exact nil)
+            (return-value nil))
         (if (string= "|" (alist-get 'value (nth (1+ i) lexer-output)))
             (progn
               (message "yo")
-              (setq is-special t
+              (setq is-exact t
                     i (1+ i)))
           nil)
-        `((type . "dict")
-          (entries . ,(parser/loop-delimeter
-                       (if is-special "| }" "}")
-                       ","
-                       'parser/parse-dict-entry
-                       t)))))
+        (setq return-value `((type . "dict")
+                             (entries . ,(parser/loop-delimeter (if is-exact "| }" "}")
+                                                                ","
+                                                                'parser/parse-dict-entry
+                                                                t))))
+        (if is-exact
+            (setq return-value (append return-value '((is-exact . t)))))
+        return-value))
 
     (defun parser/parse-generic ()
       (let ((dict-ast nil)

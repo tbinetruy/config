@@ -193,6 +193,18 @@
                                    (value . "string"))))))))))
     (parser-tests/check-parser str ast)))
 
+(ert-deftest parser-tests/multiple-keys-exact-dict ()
+  (let ((str "{| foo: 1.122, bar: string |}")
+        (ast '(((type . "dict")
+                (entries (((key . "foo")
+                           (value ((type . "name")
+                                   (value . "1.122"))))
+                          ((key . "bar")
+                           (value ((type . "name")
+                                   (value . "string"))))))
+                (is-exact . t)))))
+    (parser-tests/check-parser str ast)))
+
 (ert-deftest parser-tests/immutable-key-dict ()
   (let ((str "{ +foo: bar }")
         (ast '(((type . "dict")
