@@ -142,7 +142,6 @@
                   (setq counter 2)))))
         (list return-value)))
 
-
     (defun parser/parse-dictionary ()
       (let ((dict-ast nil)
             (counter 0)
