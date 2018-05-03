@@ -247,15 +247,6 @@
              (closing-pos (or closing-pos
                               (length lexer-output))))
 
-        ;;;; Operators on upcoming type
-
-        ; Grouping
-        ; if. matching closing bracket leads to function
-        ;   true. parse function
-        ;   false. call parse-type
-        ; always ignore closing brackets (could also check for matching opening bracket)
-
-
         ; Maybe type
         (if (equal current-value "?")
             (progn
