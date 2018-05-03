@@ -28,28 +28,32 @@
 
 (ert-deftest parser-tests/grouping-arrays-type ()
   (let ((str "(number | void[])[]")
-        (ast '(((type . "name")
-                (value . "number")
-                (union
+        (ast '(((type . "group")
+                (value
                  ((type . "name")
-                  (value . "void")
-                  (is-array . t)))
+                  (value . "number")
+                  (union
+                   ((type . "name")
+                    (value . "void")
+                    (is-array . t)))))
                 (is-array . t)))))
     (parser-tests/check-parser str ast)))
 
 (ert-deftest parser-tests/function-array-type ()
   (let ((str "((number) => void[])[]")
-        (ast '(((type . "function")
-                (arguments
-                 (((key)
-                   (value
-                    ((type . "name")
-                     (value . "number"))))))
-                (return-value
-                 ((type . "name")
-                  (value . "void")
-                  (is-array . t)))
-                (is-array . t)))))
+        (ast '(((type . "group")
+                (value
+                 ((type . "function")
+                  (arguments
+                   (((key)
+                     (value
+                      ((type . "name")
+                       (value . "number"))))))
+                  (return-value
+                   ((type . "name")
+                    (value . "void")
+                    (is-array . t)))))
+                 (is-array . t)))))
     (parser-tests/check-parser str ast)))
 
 (ert-deftest parser-tests/union-type ()

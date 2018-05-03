@@ -231,10 +231,11 @@
       (let* ((closing-pos (parser/get-matching-closing-bracket i))
              ;; excludes brackets
              (group-lex (subseq lexer-output (+ i 1) (- closing-pos 1)))
-             (return-value (car (parser/parse-lexer-output nil nil group-lex))))
+             (return-value (parser/parse-lexer-output nil nil group-lex)))
         ;; skip closing bracket
         (setq i (1+ closing-pos))
-        return-value))
+        `((type . "group")
+          (value . ,return-value))))
 
     (defun parser/parse-type (&optional closing-pos)
       (let* ((current-entry (nth i lexer-output))
