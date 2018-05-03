@@ -26,6 +26,17 @@
 (defun parser-tests/check-parser (str ast)
   (should (equal (parser/parse str) ast)))
 
+(ert-deftest parser-tests/tuple-type ()
+  (let ((str "[Type1, Type2]")
+        (ast '(((type . "tuple")
+                (value
+                 (((type . "name")
+                   (value . "Type1"))
+                  ((type . "name")
+                   (value . "Type2"))))))))
+    (parser-tests/check-parser str ast)))
+
+
 (ert-deftest parser-tests/grouping-arrays-type ()
   (let ((str "(number | void[])[]")
         (ast '(((type . "group")

@@ -275,6 +275,16 @@
               (setq i (1+ i))
               (setq current-value (cdr (assoc 'value (nth i lexer-output))))))
 
+        ; Tuple
+        (if (and (equal current-value "[")
+                 (not counter))
+            (progn
+              (setq counter 1)
+              (setq return-value `((type . "tuple")
+                                  (value . ,(parser/loop-delimeter "]" "," 'parser/parse-type nil))))
+              (setq i (1+ i))
+              (setq current-value (cdr (assoc 'value (nth i lexer-output))))))
+
         (if (and (equal current-value "(")
                  (not counter))
             (let ((is-function (parser/is-function)))
