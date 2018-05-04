@@ -327,7 +327,7 @@
               (setq i (1+ i))
               (setq current-value (cdr (assoc 'value (nth i lexer-output))))
               (if (not (string= "]" current-value))
-                  (message "array not closed")
+                  (message "not array")
                 (progn
                   (setq i (1+ i))
                   (setq current-value (cdr (assoc 'value (nth i lexer-output))))))))
