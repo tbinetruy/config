@@ -85,14 +85,25 @@
       (let ((type (cdr (assoc 'type (nth i lexer-output))))
             (value (cdr (assoc 'value (nth i lexer-output))))
             (dict-entry nil)
-            (is-immutable nil))
+            (is-immutable nil)
+            (next-value nil))
         (if (string= "+" value)
             (progn
               (setq is-immutable t)
               (setq i (1+ i))
               (setq value (cdr (assoc 'value (nth i lexer-output))))))
-        (setq dict-entry (append dict-entry
-                               `((key . ,value))))
+        (if (string= "[" value)
+            (progn
+              (setq i (1+ i)
+                    value (alist-get 'value (nth i lexer-output))
+                    next-value (alist-get 'value (nth (1+ 1) lexer-output)))
+              (setq dict-entry (append dict-entry
+                                       `((key . ,(parser/parse-function-args))
+                                         (is-indexer-prop . t))))
+              (setq i i
+                    value (alist-get 'value (nth i lexer-output))))
+          (setq dict-entry (append dict-entry
+                                   `((key . ,value)))))
         (setq i (+ i 1))
         (setq value (cdr (assoc 'value (nth i lexer-output))))
         (if (and (not (equal ":" value))

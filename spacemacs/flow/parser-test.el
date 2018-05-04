@@ -229,6 +229,35 @@
                            (is-immutable . t))))))))
     (parser-tests/check-parser str ast)))
 
+(ert-deftest parser-tests/indexer-key-dict ()
+  (let ((str "{ [foo]: bar }")
+        (ast '(((type . "dict")
+                (entries
+                 (((key
+                    ((key)
+                     (value
+                      ((type . "name")
+                       (value . "foo")))))
+                (is-indexer-prop . t)
+                (value
+                 ((type . "name")
+                  (value . "bar"))))))))))
+    (parser-tests/check-parser str ast)))
+
+(ert-deftest parser-tests/named-indexer-key-dict ()
+  (let ((str "{ [foo: you]: bar }")
+        (ast '(((type . "dict")
+                (entries
+                 (((key
+                    ((key . "foo")
+                     (value
+                      ((type . "name")
+                       (value . "you")))))
+                   (is-indexer-prop . t)
+                   (value
+                    ((type . "name")
+                     (value . "bar"))))))))))
+    (parser-tests/check-parser str ast)))
 
 (ert-deftest parser-tests/nested-dict ()
   (let ((str "{ foo: 1.122, bar: { a: Type1, b: Type2 } }")
