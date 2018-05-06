@@ -268,6 +268,11 @@
               return-value (append `((name . ,current-value)) return-value)
               i (1+ i)
               current-value (alist-get 'value (nth i lexer-output)))
+        (if (equal "<" current-value)
+            (setq return-value (append return-value `(,(parser/parse-generic)))
+                  i (1+ i)
+                  current-value (alist-get 'value (nth i lexer-output))))
+
         (if (equal "=" current-value)
             (setq i (1+ i)
                   return-value (append return-value `((value . ,(parser/parse-type)))))

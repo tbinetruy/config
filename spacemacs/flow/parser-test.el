@@ -35,6 +35,24 @@
                   (value . "B")))))))
     (parser-tests/check-parser str ast)))
 
+(ert-deftest parser-tests/generic-alias-type ()
+  (let ((str "type Foo<A, B> = A | B")
+        (ast '(((name . "Foo")
+                (type . "alias")
+                (generic
+                 (entries
+                  (((type . "name")
+                    (value . "A"))
+                   ((type . "name")
+                    (value . "B")))))
+                (value
+                 ((type . "name")
+                  (value . "A")
+                  (union
+                   ((type . "name")
+                    (value . "B")))))))))
+    (parser-tests/check-parser str ast)))
+
 (ert-deftest parser-tests/opaque-alias-type ()
   (let ((str "opaque type A = B")
         (ast '(((name . "A")
@@ -49,6 +67,18 @@
   (let ((str "class A")
         (ast '(((name . "A")
                 (type . "class")))))
+    (parser-tests/check-parser str ast)))
+
+(ert-deftest parser-tests/generic-class-type ()
+  (let ((str "class Foo<A, B>")
+        (ast '(((name . "Foo")
+                (type . "class")
+                (generic
+                 (entries
+                  (((type . "name")
+                    (value . "A"))
+                   ((type . "name")
+                    (value . "B")))))))))
     (parser-tests/check-parser str ast)))
 
 (ert-deftest parser-tests/interface-type ()
