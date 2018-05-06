@@ -130,6 +130,10 @@
             (close-counter 0)
             (close-chars (split-string close))     ; for handling multiple closing chars
             (fail nil))
+        (if (equal close (alist-get 'value (nth (1+ i) lexer-output)))
+            (setq counter 1
+                  return-value '()
+                  i (1+ i)))
         (while (equal counter 0)
           (setq i (1+ i))
           (if pass-arg

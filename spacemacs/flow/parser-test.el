@@ -148,6 +148,15 @@
                                 (value . "Type3")))))))))
     (parser-tests/check-parser str ast)))
 
+(ert-deftest parser-tests/function-type-empty-args ()
+  (let ((str "() => void")
+        (ast '(((type . "function")
+                (arguments nil)
+                (return-value
+                 ((type . "name")
+                  (value . "void")))))))
+    (parser-tests/check-parser str ast)))
+
 (ert-deftest parser-tests/function-type-unamed-args ()
   (let ((str "(number, string) => boolean")
         (ast '(((type . "function")
@@ -267,6 +276,12 @@
                                    (value . "bar")
                                    (is-optional . t))))))))))
     (message "%s" ast)
+    (parser-tests/check-parser str ast)))
+
+(ert-deftest parser-tests/empty-dict ()
+  (let ((str "{}")
+        (ast '(((type . "dict")
+                (entries nil)))))
     (parser-tests/check-parser str ast)))
 
 (ert-deftest parser-tests/single-key-dict ()
