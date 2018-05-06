@@ -418,6 +418,4 @@
       nil)
     (pp ast)))
 
-(flow-eldoc/parse-type "{foo: 1.122, bar: yo}")
-
 (provide 'parser)
