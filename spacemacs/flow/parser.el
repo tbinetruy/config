@@ -16,6 +16,11 @@
 (defun lexer/is-type (c)
   (string-match "[a-zA-Z$_]+" (format "%c" c)))
 
+(defun lexer/is-keyword (w)
+  (message "reading kw")
+  (string-match "\\(type\\|class\\|interface\\|opaque\\)"
+                (format "%s" w)))
+
 (defun lexer/read-type ()
   (let ((current-point (point))
         (match-end-pos (re-search-forward "[a-zA-z$_][a-zA-Z0-9$_]*"))
@@ -24,7 +29,9 @@
         (progn
           (setq read-value (format "%s"
                                    (buffer-substring current-point match-end-pos)))
-          `(((type . "type")
+          `(((type . ,(if (lexer/is-keyword read-value)
+                          "keyword"
+                        "type"))
              (value . ,read-value))))
       (nil))))
 
