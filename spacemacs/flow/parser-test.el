@@ -26,6 +26,37 @@
 (defun parser-tests/check-parser (str ast)
   (should (equal (parser/parse str) ast)))
 
+(ert-deftest parser-tests/alias-type ()
+  (let ((str "type A = B")
+        (ast '(((name . "A")
+                (type . "alias")
+                (value
+                 ((type . "name")
+                  (value . "B")))))))
+    (parser-tests/check-parser str ast)))
+
+(ert-deftest parser-tests/opaque-alias-type ()
+  (let ((str "opaque type A = B")
+        (ast '(((name . "A")
+                (type . "alias")
+                (is-opaque . t)
+                (value
+                 ((type . "name")
+                  (value . "B")))))))
+    (parser-tests/check-parser str ast)))
+
+(ert-deftest parser-tests/class-type ()
+  (let ((str "class A")
+        (ast '(((name . "A")
+                (type . "class")))))
+    (parser-tests/check-parser str ast)))
+
+(ert-deftest parser-tests/interface-type ()
+  (let ((str "interface A")
+        (ast '(((name . "A")
+                (type . "interface")))))
+    (parser-tests/check-parser str ast)))
+
 (ert-deftest parser-tests/tuple-type ()
   (let ((str "[Type1, Type2]")
         (ast '(((type . "tuple")

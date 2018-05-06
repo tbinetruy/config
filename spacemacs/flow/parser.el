@@ -18,8 +18,10 @@
 
 (defun lexer/is-keyword (w)
   (message "reading kw")
-  (string-match "\\(type\\|class\\|interface\\|opaque\\)"
-                (format "%s" w)))
+  (toggle-case-fold-search)
+  (let ((return-value (string-match "\\(type\\|class\\|interface\\|opaque\\)" (format "%s" w))))
+    (toggle-case-fold-search)
+    return-value))
 
 (defun lexer/read-type ()
   (let ((current-point (point))
@@ -255,6 +257,37 @@
         `((type . "group")
           (value . ,return-value))))
 
+    (defun parser/parse-equality (return-value)
+      (message "foobar ofoo yoo %s" return-value)
+      (let ((counter 0)
+            (current-value (alist-get 'value (nth i lexer-output))))
+        (if (equal current-value "type")
+            (setq return-value (append '((type . "alias")) return-value)))
+        (if (equal current-value "class")
+            (setq return-value (append '((type . "class")) return-value)))
+        (if (equal current-value "interface")
+            (setq return-value (append '((type . "interface")) return-value))
+          (message "invalid keyword"))
+        (setq i (1+ i)
+              current-value (alist-get 'value (nth i lexer-output))
+              return-value (append `((name . ,current-value)) return-value)
+              i (1+ i)
+              current-value (alist-get 'value (nth i lexer-output)))
+        (message "=== %s" current-value)
+        (if (equal "=" current-value)
+            (setq i (1+ i)
+                  return-value (append return-value `((value . ,(parser/parse-type)))))
+          (message "missing equal sign in keyword equality"))
+        return-value))
+
+    (defun parser/parse-keyword (current-value)
+      (let ((return-value nil))
+        (if (string= current-value "opaque")
+            (setq i (1+ i)
+                  return-value '((is-opaque . t))))
+        (setq return-value (parser/parse-equality return-value))
+        return-value))
+
     (defun parser/parse-type (&optional closing-pos)
       (let* ((current-entry (nth i lexer-output))
              (current-type (cdr (assoc 'type current-entry)))
@@ -273,7 +306,17 @@
               (setq is-optional-type t))
           nil)
 
+
         ;;;; Operators on current type
+
+        ;; keywords
+        (if (equal current-type "keyword")
+            (progn
+              (setq return-value (parser/parse-keyword
+                                  current-value)
+                    counter 1)))
+
+        (message "r3turning %s" return-value)
 
         ; Dict
         (if (and (equal current-value "{")
