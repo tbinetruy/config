@@ -17,7 +17,6 @@
   (string-match "[a-zA-Z$_]+" (format "%c" c)))
 
 (defun lexer/is-keyword (w)
-  (message "reading kw")
   (toggle-case-fold-search)
   (let ((return-value (string-match "\\(type\\|class\\|interface\\|opaque\\)" (format "%s" w))))
     (toggle-case-fold-search)
@@ -169,7 +168,6 @@
             (return-value nil))
         (if (string= "|" (alist-get 'value (nth (1+ i) lexer-output)))
             (progn
-              (message "yo")
               (setq is-exact t
                     i (1+ i)))
           nil)
@@ -258,22 +256,18 @@
           (value . ,return-value))))
 
     (defun parser/parse-equality (return-value)
-      (message "foobar ofoo yoo %s" return-value)
-      (let ((counter 0)
-            (current-value (alist-get 'value (nth i lexer-output))))
+      (let ((current-value (alist-get 'value (nth i lexer-output))))
         (if (equal current-value "type")
             (setq return-value (append '((type . "alias")) return-value)))
         (if (equal current-value "class")
             (setq return-value (append '((type . "class")) return-value)))
         (if (equal current-value "interface")
-            (setq return-value (append '((type . "interface")) return-value))
-          (message "invalid keyword"))
+            (setq return-value (append '((type . "interface")) return-value)))
         (setq i (1+ i)
               current-value (alist-get 'value (nth i lexer-output))
               return-value (append `((name . ,current-value)) return-value)
               i (1+ i)
               current-value (alist-get 'value (nth i lexer-output)))
-        (message "=== %s" current-value)
         (if (equal "=" current-value)
             (setq i (1+ i)
                   return-value (append return-value `((value . ,(parser/parse-type)))))
@@ -315,8 +309,6 @@
               (setq return-value (parser/parse-keyword
                                   current-value)
                     counter 1)))
-
-        (message "r3turning %s" return-value)
 
         ; Dict
         (if (and (equal current-value "{")
