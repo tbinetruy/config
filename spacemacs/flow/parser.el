@@ -315,6 +315,13 @@
                                   current-value)
                     counter 1)))
 
+        ;; Generics
+        (if (string= "<" current-value)
+            (progn
+              (setq return-value (append return-value (list (parser/parse-generic))))
+              (setq i (+ 1 i))
+              (setq current-value (cdr (assoc 'value (nth i lexer-output))))))
+
         ; Dict
         (if (and (equal current-value "{")
                  (not counter))
@@ -340,7 +347,7 @@
               (progn
                (setq counter 1)
                (if is-function
-                   (setq return-value (parser/parse-function))
+                   (setq return-value (append (parser/parse-function) return-value))
                  (progn
                    (setq return-value (parser/parse-group))
                    (setq current-value (alist-get 'value (nth i lexer-output))))))))

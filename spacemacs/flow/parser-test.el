@@ -199,6 +199,25 @@
                   (value . "boolean")))))))
     (parser-tests/check-parser str ast)))
 
+(ert-deftest parser-tests/generic-function-type ()
+  (let ((str "<A, B>(a) => void")
+        (ast '(((type . "function")
+                (arguments
+                 (((key)
+                   (value
+                    ((type . "name")
+                     (value . "a"))))))
+                (return-value
+                 ((type . "name")
+                  (value . "void")))
+                (generic
+                 (entries
+                  (((type . "name")
+                    (value . "A"))
+                   ((type . "name")
+                    (value . "B")))))))))
+    (parser-tests/check-parser str ast)))
+
 (ert-deftest parser-tests/array-type ()
   (let ((str "Type[]")
         (ast '(((type . "name")
