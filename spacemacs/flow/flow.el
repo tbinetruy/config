@@ -501,9 +501,9 @@
   (defun js2--eldoc-via-tern ()
     (message (flow-type-at-pos-eldoc)))
 
-  (add-hook 'react-mode-hook
-            (lambda ()
-              (setq-local eldoc-documentation-function #'js2--eldoc-via-tern)))
+  ; (add-hook 'react-mode-hook
+  ;           (lambda ()
+  ;             (setq-local eldoc-documentation-function #'js2--eldoc-via-tern)))
 
   ;; imenu in react mode
   ; doesn't work very well

@@ -80,5 +80,7 @@
     result))
 
 (defun flow-eldoc/highlight-str (str)
-  (let* ((ast (parser/parse str)))
-    (flow-eldoc/highlight-ast ast)))
+  (let* ((ast (parser/parse str))
+         (return-val (flow-eldoc/highlight-ast ast)))
+    (message return-val)
+    return-val))
