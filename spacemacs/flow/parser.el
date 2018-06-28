@@ -252,7 +252,7 @@
     (defun parser/parse-group ()
       (let* ((closing-pos (parser/get-matching-closing-bracket i))
              ;; excludes brackets
-             (group-lex (subseq lexer-output (+ i 1) (- closing-pos 1)))
+             (group-lex (subseq lexer-output (+ i 1) (- closing-pos 0)))
              (return-value (parser/parse-lexer-output nil nil group-lex)))
         ;; skip closing bracket
         (setq i (1+ closing-pos))
@@ -358,10 +358,11 @@
 
         ; Default
         (if (not counter)
-            (progn (setq return-value `((type . "name")
-                                        (value . ,current-value)))
-                   (setq i (1+ i))
-                   (setq current-value (cdr (assoc 'value (nth i lexer-output))))))
+            (progn
+              (setq return-value `((type . "name")
+                                   (value . ,current-value)))
+              (setq i (1+ i))
+              (setq current-value (cdr (assoc 'value (nth i lexer-output))))))
 
         ;;;; Operators on previous type
 

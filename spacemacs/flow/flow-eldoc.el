@@ -120,9 +120,11 @@
                 result (flow-eldoc/highlight-interface ast))))
     (if (and (equal type "dict")
              counter)
+    (if (and (equal type "group")
+             counter)
         (progn
           (setq counter nil
-                result (parse-arguments (car (alist-get 'entries ast)) "{" "}"))))
+                result (concat "(" (flow-eldoc/highlight-ast value) ")"))))
     (if (and (equal type "function")
              counter)
         (progn
