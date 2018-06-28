@@ -97,6 +97,16 @@
                    (value . "Type2"))))))))
     (parser-tests/check-parser str ast)))
 
+(ert-deftest parser-tests/grouping-without-arrays-type ()
+  (let ((str "(a | b)")
+        (ast '(((type . "group")
+                (value
+                 ((type . "name")
+                  (value . "a")
+                  (union
+                   ((type . "name")
+                    (value . "b")))))))))
+    (parser-tests/check-parser str ast)))
 
 (ert-deftest parser-tests/grouping-arrays-type ()
   (let ((str "(number | void[])[]")
