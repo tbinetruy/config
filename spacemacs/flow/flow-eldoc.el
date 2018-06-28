@@ -3,6 +3,9 @@
 (defun type-name-color (str)
   (propertize str 'face 'font-lock-type-face))
 
+(defun kw-color (str)
+  (propertize str 'face 'font-lock-type-face))
+
 (defun generic-name-color (str)
   (propertize str 'face 'font-lock-comment-face))
 
@@ -49,6 +52,34 @@
         (generics (car (alist-get 'entries (alist-get 'generic ast)))))
     (concat (if generics (parse-generics generics) "") arguments return-value)))
 
+(defun flow-eldoc/highlight-class (ast)
+  (let ((name (alist-get 'name ast))
+        (value (alist-get 'value ast)))
+    (concat (kw-color "class") name " = " (flow-eldoc/highlight-ast value))))
+
+(defun flow-eldoc/highlight-equality (ast type)
+  (let* ((name (alist-get 'name ast))
+        (value (alist-get 'value ast))
+        (is-opaque (alist-get 'is-opaque ast))
+        (generics (car (alist-get 'entries (alist-get 'generic ast))))
+        (result (concat (kw-color type) " " name)))
+    (if is-opaque
+        (setq result (concat (kw-color "opaque ") result)))
+    (if generics
+        (setq result (concat result (parse-generics generics))))
+    (if value
+        (concat result " = " (flow-eldoc/highlight-ast value))
+      result )))
+
+(defun flow-eldoc/highlight-alias (ast)
+  (flow-eldoc/highlight-equality ast "type"))
+
+(defun flow-eldoc/highlight-class (ast)
+  (flow-eldoc/highlight-equality ast "class"))
+
+(defun flow-eldoc/highlight-interface (ast)
+  (flow-eldoc/highlight-equality ast "interface"))
+
 (defun flow-eldoc/highlight-ast (_ast)
   (let* ((ast (car _ast))
          (counter t)
@@ -76,6 +107,21 @@
               (setq result (concat result " & " (flow-eldoc/highlight-ast intersection))))
           (if is-array
               (setq result (concat result "[]")))))
+    (if (and (equal type "alias")
+             counter)
+        (progn
+          (setq counter nil
+                result (flow-eldoc/highlight-alias ast))))
+    (if (and (equal type "class")
+             counter)
+        (progn
+          (setq counter nil
+                result (flow-eldoc/highlight-class ast))))
+    (if (and (equal type "interface")
+             counter)
+        (progn
+          (setq counter nil
+                result (flow-eldoc/highlight-interface ast))))
     (if (and (equal type "dict")
              counter)
         (progn
