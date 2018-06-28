@@ -120,6 +120,15 @@
                 result (flow-eldoc/highlight-interface ast))))
     (if (and (equal type "dict")
              counter)
+        (progn
+          (let ((is-exact (alist-get 'is-exact ast))
+                (open "{")
+                (close "}"))
+            (if is-exact
+                (setq open "{|"
+                      close "|}"))
+            (setq counter nil
+                  result (parse-arguments (car (alist-get 'entries ast)) open close)))))
     (if (and (equal type "group")
              counter)
         (progn
