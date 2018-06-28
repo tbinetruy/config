@@ -101,10 +101,6 @@
           (if generics
               (setq result (generic-name-color result)
                     result (concat result (parse-generics generics))))
-          (if union
-              (setq result (concat result " | " (flow-eldoc/highlight-ast union))))
-          (if intersection
-              (setq result (concat result " & " (flow-eldoc/highlight-ast intersection))))
           (if is-array
               (setq result (concat result "[]")))))
     (if (and (equal type "alias")
@@ -132,6 +128,10 @@
         (progn
           (setq counter nil
                 result (flow-eldoc/highlight-function ast))))
+    (if union
+        (setq result (concat result " | " (flow-eldoc/highlight-ast union))))
+    (if intersection
+        (setq result (concat result " & " (flow-eldoc/highlight-ast intersection))))
     result))
 
 (defun flow-eldoc/highlight-str (str)
