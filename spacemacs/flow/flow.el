@@ -119,26 +119,27 @@
   (require 'json)
   (require 'flycheck)
   (defun flycheck-parse-flow (output checker buffer)
-    (let ((json-array-type 'list))
-      (let ((o (json-read-from-string output)))
-        (mapcar #'(lambda (errp)
-                    (let ((err (cadr (assoc 'message errp)))
-                          (err-full (mapcar #'(lambda (e)
-                                              (cdr (assoc 'descr e)))
-                                            (cdr (assoc 'message errp))))
-                          (err2 (cadr (cdr (assoc 'message errp)))))
-                      (flycheck-error-new
-                      :line (cdr (assoc 'line err))
-                      :column (cdr (assoc 'start err-full))
-                      :level 'error
-                      :message (format "%s" err-full)
-                      :filename (f-relative
-                                  (cdr (assoc 'path err))
-                                  (f-dirname (file-truename
-                                              (buffer-file-name))))
-                      :buffer buffer
-                      :checker checker)))
-                (cdr (assoc 'errors o))))))
+    (if flow-mode
+        (let ((json-array-type 'list))
+          (let ((o (json-read-from-string output)))
+            (mapcar #'(lambda (errp)
+                        (let ((err (cadr (assoc 'message errp)))
+                              (err-full (mapcar #'(lambda (e)
+                                                    (cdr (assoc 'descr e)))
+                                                (cdr (assoc 'message errp))))
+                              (err2 (cadr (cdr (assoc 'message errp)))))
+                          (flycheck-error-new
+                            :line (cdr (assoc 'line err))
+                            :column (cdr (assoc 'start err-full))
+                            :level 'error
+                            :message (format "%s" err-full)
+                            :filename (f-relative
+                                      (cdr (assoc 'path err))
+                                      (f-dirname (file-truename
+                                                  (buffer-file-name))))
+                            :buffer buffer
+                            :checker checker)))
+                    (cdr (assoc 'errors o)))))))
 
   (flycheck-define-checker javascript-flow
     "Static type checking using Flow."
