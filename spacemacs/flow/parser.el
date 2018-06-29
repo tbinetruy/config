@@ -120,8 +120,7 @@
             (progn
               (setq is-optional t
                     i (1+ i)
-                    value (alist-get 'value (nth i lexer-output)))
-              (message "foo: %s" value)))
+                    value (alist-get 'value (nth i lexer-output)))))
         (if (and (not (equal ":" value))
                  (equal counter 0))
             (message "missing ':' ; got %s" value))

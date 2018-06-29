@@ -26,10 +26,10 @@
   (let* ((key (alist-get 'key argument-ast))
          (value (flow-eldoc/highlight-ast (alist-get 'value argument-ast)))
          (str "")
+         (is-optional (alist-get 'is-optional argument-ast))
          (is-immutable (alist-get 'is-immutable argument-ast)))
-    (message "%s" is-immutable)
     (if key
-        (setq str (concat str (if is-immutable "+") (key-name-color key) ": " value))
+        (setq str (concat str (if is-immutable "+") (key-name-color key) (if is-optional "?") ": " value))
       (concat str value))))
 
 (defun parse-arguments (arguments-ast open close)
