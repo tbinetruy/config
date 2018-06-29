@@ -27,9 +27,13 @@
          (value (flow-eldoc/highlight-ast (alist-get 'value argument-ast)))
          (str "")
          (is-optional (alist-get 'is-optional argument-ast))
+         (is-indexer-prop (alist-get 'is-indexer-prop argument-ast))
          (is-immutable (alist-get 'is-immutable argument-ast)))
     (if key
-        (setq str (concat str (if is-immutable "+") (key-name-color key) (if is-optional "?") ": " value))
+        (progn
+          (if is-indexer-prop
+              (setq str (concat str (if is-immutable "+") "[" (key-name-color (alist-get 'value (car (alist-get 'value (car key))))) "]" (if is-optional "?") ": " value))
+            (setq str (concat str (if is-immutable "+") (key-name-color key) (if is-optional "?") ": " value))))
       (concat str value))))
 
 (defun parse-arguments (arguments-ast open close)
