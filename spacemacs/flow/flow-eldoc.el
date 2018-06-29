@@ -12,8 +12,17 @@
 (defun key-name-color (str)
   (propertize str 'face 'font-lock-variable-name-face))
 
+(defun parse-generic (e)
+  (let ((typevar-name (alist-get 'typevar-name e)))
+    (message "%s" typevar-name)
+    (if typevar-name
+        (concat typevar-name
+                " = "
+                (flow-eldoc/highlight-ast (list e)))
+      (flow-eldoc/highlight-ast (list e)))))
+
 (defun parse-generics (generics-ast)
-  (let ((args (mapcar (lambda (e) (flow-eldoc/highlight-ast (list e))) generics-ast))
+  (let ((args (mapcar #'parse-generic generics-ast))
         (i 0)
         (str "<"))
     (while (< i (- (length args) 1))
