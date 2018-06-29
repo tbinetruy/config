@@ -203,7 +203,7 @@
             (progn
               (setq i (+ i 2)
                     return-value (car (parser/parse-type))
-                    return-value (map-put return-value 'typevar-name t))
+                    return-value (map-put return-value 'typevar-name current-value))
               `(,return-value))
           (setq return-value (parser/parse-type)))))
 

@@ -410,7 +410,7 @@
   (let ((str "Type<A = number>")
         (ast '(((type . "name")
                 (value . "Type")
-                (generic (entries (((typevar-name . t)
+                (generic (entries (((typevar-name . "A")
                                     (type . "name")
                                     (value . "number")))))))))
     (parser-tests/check-parser str ast)))
