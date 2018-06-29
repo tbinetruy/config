@@ -406,6 +406,15 @@
                                     (value . "string")))))))))
     (parser-tests/check-parser str ast)))
 
+(ert-deftest parser-tests/generic-type-default-value ()
+  (let ((str "Type<A = number>")
+        (ast '(((type . "name")
+                (value . "Type")
+                (generic (entries (((typevar-name . t)
+                                    (type . "name")
+                                    (value . "number")))))))))
+    (parser-tests/check-parser str ast)))
+
 (ert-deftest parser-tests/immutable-arg-generic-type ()
   (let ((str "A<B, +C>")
         (ast '(((type . "name")

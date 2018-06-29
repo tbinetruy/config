@@ -193,10 +193,24 @@
             (setq return-value (append return-value '((is-exact . t)))))
         return-value))
 
+    (defun parser/parse-generic-entry ()
+      (let* ((current-entry (nth i lexer-output))
+             (current-value (alist-get 'value current-entry))
+             (next-entry (nth (1+ i) lexer-output))
+             (next-value (alist-get 'value next-entry))
+             (return-value ""))
+        (if (string= next-value "=")
+            (progn
+              (setq i (+ i 2)
+                    return-value (car (parser/parse-type))
+                    return-value (map-put return-value 'typevar-name t))
+              `(,return-value))
+          (setq return-value (parser/parse-type)))))
+
     (defun parser/parse-generic ()
       (let ((dict-ast nil)
             (counter 0))
-        `(generic . ((entries . ,(parser/loop-delimeter ">" "," 'parser/parse-type nil))))))
+        `(generic . ((entries . ,(parser/loop-delimeter ">" "," 'parser/parse-generic-entry nil))))))
 
     (defun parser/parse-function-args ()
       (let ((arg-ast nil)
