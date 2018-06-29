@@ -411,42 +411,39 @@
     (setq buffer-content (buffer-string))
     ;(message buffer-content)
 
-    (async-start
-     `(lambda ()
-        ;; copying vars by value because process has its own buffer
-        (set 'file ,file)
-        (set 'line ,line)                         (when (re-search-forward "\\(number\\)" nil t)
-                           (replace-match (propertize (match-string-no-properties 1) 'face 'italic)))
+    (if flow-mode
+        (async-start
+          `(lambda ()
+            ;; copying vars by value because process has its own buffer
+            (set 'file ,file)
+            (set 'line ,line)
+            (when (re-search-forward "\\(number\\)" nil t)
+              (replace-match (propertize (match-string-no-properties 1) 'face 'italic)))
+            (set 'buffer-content ,buffer-content)
+            (set 'col ,col)
+            ;; stripping properties from text
+            (set-text-properties 0 (length buffer-content) nil buffer-content)
+            (setq output (shell-command-to-string
+                          (concat
+                            "echo "
+                            (shell-quote-argument buffer-content)
+                            " | "
+                            (format "npm run -s flow -- type-at-pos --from emacs --path=%s %d %d --json"
+                                    file
+                                    line
+                                    (1+ col)))))
+            (format "%s" output))
+          (lambda (result)
+            (setq str (cdr (assoc 'type (json-read-from-string result))))
+                                            ; (setq str (propertize str 'face 'italic))
 
-        (set 'buffer-content ,buffer-content)
-        (set 'col ,col)
-        ;; stripping properties from text
-        (set-text-properties 0 (length buffer-content) nil buffer-content)
-
-        (setq output (shell-command-to-string
-                   (concat
-                    "echo "
-                    (shell-quote-argument buffer-content)
-                    " | "
-                    (format "npm run -s flow -- type-at-pos --from emacs --path=%s %d %d --json"
-                            file
-                            line
-                            (1+ col)))))
-
-        (format "%s" output))
-
-     (lambda (result)
-       (setq str (cdr (assoc 'type (json-read-from-string result))))
-       ; (setq str (propertize str 'face 'italic))
-
-;       (setq str (replace-regexp-in-string
-;                  "\\(string\\|number\\)"
-;                  (propertize "\\1hey" 'face 'italic)
-;                  (substring-no-properties str) nil))
+                                            ;       (setq str (replace-regexp-in-string
+                                            ;                  "\\(string\\|number\\)"
+                                            ;                  (propertize "\\1hey" 'face 'italic)
+                                            ;                  (substring-no-properties str) nil))
 
 
-       (message "%s" (flow-eldoc/highlight-str str))))
-
+            (message "%s" (flow-eldoc/highlight-str str)))))
     (format ""))
 
   (defun js2--eldoc-via-tern ()
