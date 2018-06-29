@@ -29,6 +29,7 @@
 ;; results.
 (require 'generic-x) ;; we need this
 (require 'async)
+(load-file "~/config/spacemacs/flow/flow-eldoc.el")
 (defun flowing-mode-config ()
   "For use in `foo-mode-hook'."
   ;;(define-key map (kbd [tab]) 'evil-toggle-fold)

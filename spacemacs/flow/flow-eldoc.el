@@ -1,4 +1,4 @@
-(load-file "./parser.el")
+(load-file "~/config/spacemacs/flow/parser.el")
 
 (defun type-name-color (str)
   (propertize str 'face 'font-lock-type-face))
