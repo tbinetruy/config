@@ -80,6 +80,19 @@
 (defun flow-eldoc/highlight-interface (ast)
   (flow-eldoc/highlight-equality ast "interface"))
 
+(defun parse-tuple (ast)
+  (let* ((value (car (alist-get 'value ast)))
+         (str "[")
+         (i 0)
+         (imax (length value)))
+    (while (< i imax)
+      (setq str (concat str
+                        (flow-eldoc/highlight-ast
+                         (list (nth i value)))
+                        (if (< i (1- imax)) ", "))
+            i (1+ i)))
+    (concat str "]")))
+
 (defun flow-eldoc/highlight-ast (_ast)
   (let* ((ast (car _ast))
          (counter t)
@@ -103,6 +116,11 @@
                     result (concat result (parse-generics generics))))
           (if is-array
               (setq result (concat result "[]")))))
+    (if (and (equal type "tuple")
+             counter)
+        (progn
+          (setq counter nil
+                result (parse-tuple ast))))
     (if (and (equal type "alias")
              counter)
         (progn
