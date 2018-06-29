@@ -530,3 +530,6 @@
 
 (with-eval-after-load 'company-flow
   (add-to-list 'company-flow-modes 'react-mode))
+
+(define-minor-mode flow-mode
+  "Activates flowjs functionalities")
