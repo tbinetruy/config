@@ -13,3 +13,7 @@ class Bar {
 }
 
 const b = new Bar()
+const f = (a = true) => false
+
+type F$C<T> = T
+
