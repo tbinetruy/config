@@ -108,7 +108,7 @@
              counter)
         (progn
           (if is-optional
-              (setq result "?"))
+              (setq result (concat result "?")))
           (setq counter nil
                 result (concat result (type-name-color value)))
           (if generics
