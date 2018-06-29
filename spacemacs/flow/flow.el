@@ -442,68 +442,17 @@
 ;                  (propertize "\\1hey" 'face 'italic)
 ;                  (substring-no-properties str) nil))
 
-       (with-temp-buffer "bar"
-                         (insert str)
-                         (goto-char (point-min))
 
-                         ;; basic types: number, string, boolean
-                         (while (re-search-forward "\\(number\\|string\\|boolean\\)" nil t)
-                           (replace-match (propertize (match-string-no-properties 1) 'face 'italic)))
-                         (goto-char (point-min))
-
-                         ;; type<Name>
-                         (while (re-search-forward "\\(= \\|: \\)\\([a-z0-9A-Z\\$]+\\)\<\\([a-z0-9A-Z]+\[?\]?\\)\>" nil t)
-                           (replace-match (concat
-                                           (propertize (match-string-no-properties 1) 'face '(:foreground "light coral" :weight "italic"))
-                                           (propertize (match-string-no-properties 2) 'face '(:foreground "light coral" :weight "italic"))
-                                           (propertize "<" 'face '(:foreground "chartreuse" :weight bold))
-                                           (propertize (match-string-no-properties 3) 'face '(:foreground "chocolate" :weight "italic"))
-                                           (propertize ">" 'face '(:foreground "chartreuse" :weight bold)))))
-                         (goto-char (point-min))
-
-                         ;; type Name =
-                         (while (re-search-forward "type \\([a-z0-9A-Z]+\\) =" nil t)
-                           (replace-match (concat
-                                           (propertize "type " 'face '(:foreground "dark orange" :weight bold))
-                                           (propertize (match-string-no-properties 1) 'face '(:foreground "light coral" :weight bold))
-                                           " =")))
-                         (goto-char (point-min))
-
-                        ; ;; type type<Name> =
-                         (while (re-search-forward "type \\([a-z0-9A-Z\\$]+\\)\<\\([a-z0-9A-Z]+\[?\]?\\)\> =" nil t)
-                           (replace-match (concat
-                                           (propertize "type " 'face '(:foreground "dark orange" :weight bold))
-                                           (propertize (match-string-no-properties 1) 'face '(:foreground "pink" :weight bold))
-                                           (propertize "<" 'face '(:foreground "chartreuse" :weight bold))
-                                           (propertize (match-string-no-properties 2) 'face '(:foreground "chocolate" :weight bold))
-                                           (propertize ">" 'face '(:foreground "chartreuse" :weight bold))
-                                           " =")))
-                         (goto-char (point-min))
-
-                         ;; key: type
-                         (while (re-search-forward "\\([a-z0-9A-Z]+\\)\\([\\?]?: \\)" nil t)
-                           (replace-match (concat
-                                           (propertize (match-string-no-properties 1) 'face '(:foreground "medium spring green" :weight bold))
-                                           (match-string-no-properties 2))))
-                                           ;(propertize (match-string-no-properties 3) 'face 'italic))))
-                         (goto-char (point-min))
-
-                         ;; => returnType
-                         (while (re-search-forward "=> \\([a-zA-Z0-9]+\\)" nil t)
-                           (replace-match (concat "=> " (propertize (match-string-no-properties 1) 'face 'bold-italic))))
-                         (goto-char (point-min))
-                         (setq str (buffer-string)))
-
-       (message "%s" str)))
+       (message "%s" (flow-eldoc/highlight-str str))))
 
     (format ""))
 
   (defun js2--eldoc-via-tern ()
     (message (flow-type-at-pos-eldoc)))
 
-  ; (add-hook 'react-mode-hook
-  ;           (lambda ()
-  ;             (setq-local eldoc-documentation-function #'js2--eldoc-via-tern)))
+   (add-hook 'react-mode-hook
+             (lambda ()
+               (setq-local eldoc-documentation-function #'js2--eldoc-via-tern)))
 
   ;; imenu in react mode
   ; doesn't work very well
