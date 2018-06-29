@@ -277,23 +277,23 @@
    (interactive)
    (let ((file (buffer-file-name))
          (line (line-number-at-pos))
-    (col (current-column))
-    (buffer-content (buffer-string))
-    (buffer (current-buffer)))
-     (popup-tip
-      (format "%s"
-       (cdr(assoc 'type
-                   (json-read-from-string
-                         (shell-command-to-string
-                           (concat
-                           "echo "
-                           (shell-quote-argument buffer-content)
-                           " | "
-                           (format "%s type-at-pos --from emacs --path=%s %d %d --json"
-                                   flow_binary
-                                   file
-                                   line
-                                   (1+ col)))))))))))
+         (col (current-column))
+         (buffer-content (buffer-string))
+         (buffer (current-buffer))
+         (type-string (format "%s"
+                              (cdr(assoc 'type
+                                         (json-read-from-string
+                                          (shell-command-to-string
+                                           (concat
+                                            "echo "
+                                            (shell-quote-argument buffer-content)
+                                            " | "
+                                            (format "%s type-at-pos --from emacs --path=%s %d %d --json"
+                                                    flow_binary
+                                                    file
+                                                    line
+                                                    (1+ col))))))))))
+     (popup-tip type-string)))
 
   (spacemacs/set-leader-keys-for-major-mode 'react-mode "ft" 'flow-type-at-pos)
   (spacemacs/set-leader-keys-for-major-mode 'js2-mode "ft" 'flow-type-at-pos)
