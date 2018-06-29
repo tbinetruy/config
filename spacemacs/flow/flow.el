@@ -531,3 +531,14 @@
 
 (define-minor-mode flow-mode
   "Activates flowjs functionalities")
+
+(defun check-flow-minor-mode ()
+  "activates flow mode if buffer starts with // @flow (no multi line comment for now)"
+  (let* ((str (buffer-string))
+         (result (string-match "\\(\s\\|\n\\)*//\s*@flow" str)))
+    (if (equal result 0)
+        (flow-mode))))
+
+(add-hook 'react-mode-hook #'check-flow-minor-mode)
+(add-hook 'js2-mode-hook #'check-flow-minor-mode)
+(add-hook 'rjsx-mode-hook #'check-flow-minor-mode)
