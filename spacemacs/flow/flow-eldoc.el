@@ -102,10 +102,13 @@
          (intersection (alist-get 'intersection ast))
          (generics (car (alist-get 'entries (alist-get 'generic ast))))
          (is-array (alist-get 'is-array ast))
+         (is-immutable (alist-get 'is-immutable ast))
          (is-optional (alist-get 'is-optional ast)))
     (if (and (equal type "name")
              counter)
         (progn
+          (if is-immutable
+              (setq result (concat result "+")))
           (if is-optional
               (setq result (concat result "?")))
           (setq counter nil

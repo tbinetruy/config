@@ -298,6 +298,7 @@
              (return-value nil)
              (counter nil)
              (is-optional-type nil)
+             (is-immutable-type nil)
              (closing-pos (or closing-pos
                               (length lexer-output))))
 
@@ -307,6 +308,14 @@
               (setq i (1+ i))
               (setq current-value (cdr (assoc 'value (nth i lexer-output))))
               (setq is-optional-type t))
+          nil)
+
+        ; Maybe type
+        (if (equal current-value "+")
+            (progn
+              (setq i (1+ i))
+              (setq current-value (cdr (assoc 'value (nth i lexer-output))))
+              (setq is-immutable-type t))
           nil)
 
 
@@ -402,6 +411,10 @@
         ; Maybe
         (if is-optional-type
             (setq return-value (append return-value '((is-optional . t)))))
+
+        ; Maybe
+        (if is-immutable-type
+            (setq return-value (append return-value '((is-immutable . t)))))
 
         (list return-value)))
 

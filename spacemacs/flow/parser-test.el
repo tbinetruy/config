@@ -388,6 +388,17 @@
                                     (value . "string")))))))))
     (parser-tests/check-parser str ast)))
 
+(ert-deftest parser-tests/immutable-arg-generic-type ()
+  (let ((str "A<B, +C>")
+        (ast '(((type . "name")
+                (value . "A")
+                (generic (entries (((type . "name")
+                                    (value . "B"))
+                                   ((type . "name")
+                                    (value . "C")
+                                    (is-immutable . t)))))))))
+    (parser-tests/check-parser str ast)))
+
 
 (ert-deftest parser-tests/multiple-args-generic-type ()
   (let ((str "Type1<string, Type2<number, string>, number>")
