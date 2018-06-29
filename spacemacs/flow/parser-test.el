@@ -218,6 +218,24 @@
                   (value . "boolean")))))))
     (parser-tests/check-parser str ast)))
 
+(ert-deftest parser-tests/function-optional-args ()
+  (let ((str "(arg1?: number, arg2: string) => boolean")
+        (ast '(((type . "function")
+                (arguments
+                 (((key . "arg1")
+                   (value
+                    ((type . "name")
+                     (value . "number")))
+                   (is-optional . t))
+                  ((key . "arg2")
+                   (value
+                    ((type . "name")
+                     (value . "string"))))))
+                (return-value
+                 ((type . "name")
+                  (value . "boolean")))))))
+    (parser-tests/check-parser str ast)))
+
 (ert-deftest parser-tests/generic-function-type ()
   (let ((str "<A, B>(a) => void")
         (ast '(((type . "function")

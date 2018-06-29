@@ -94,7 +94,9 @@
             (value (cdr (assoc 'value (nth i lexer-output))))
             (dict-entry nil)
             (is-immutable nil)
+            (is-optional nil)
             (next-value nil))
+
         (if (string= "+" value)
             (progn
               (setq is-immutable t)
@@ -114,6 +116,12 @@
                                    `((key . ,value)))))
         (setq i (+ i 1))
         (setq value (cdr (assoc 'value (nth i lexer-output))))
+        (if (string= "?" value)
+            (progn
+              (setq is-optional t
+                    i (1+ i)
+                    value (alist-get 'value (nth i lexer-output)))
+              (message "foo: %s" value)))
         (if (and (not (equal ":" value))
                  (equal counter 0))
             (message "missing ':' ; got %s" value))
@@ -122,6 +130,8 @@
                                `((value . ,(parser/parse-type)))))
         (if is-immutable
             (setq dict-entry (append dict-entry `((is-immutable . ,t)))))
+        (if is-optional
+            (setq dict-entry (append dict-entry `((is-optional . ,t)))))
         (append dict-ast (list dict-entry))))
 
     (defun parser/loop-delimeter (close separator callback pass-arg)
@@ -197,7 +207,8 @@
             (return-value '((key nil)
                             (value nil))))
         ;; check if next value is colon
-        (if (string= ":" next-value)
+        (if (or (string= ":" next-value)
+                (string= "?" next-value))
             (setq return-value (parser/parse-dict-entry '()))
           (setq return-value `(((key . nil)
                                 (value . ,(parser/parse-type))))))
