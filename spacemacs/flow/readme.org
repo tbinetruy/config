@@ -45,6 +45,9 @@ dotspacemacs-additional-packages '(company-flow)
 3. start react-mode or js2-mode
 
 
+** Flow-mode (minor mode)
+This mode is defined in flow.el. Flow-mode is automatically activated on react/js2/rjsx-mode hooks if the buffer starts with ~\\ @flow~ (multi line comment syntax currently not supported)
+   
 ** Flow semantic autocomplete
 Autocomplete is ran through /company-flow [0]/. If you have the spacemacs /auto-completion layer [1]/ enabled, flow suggestions will show up in the /company [2]/ autocomplete popup.
 
@@ -55,14 +58,16 @@ Autocomplete is ran through /company-flow [0]/. If you have the spacemacs /auto-
 [2] http://company-mode.github.io/
 
 ** Flow type linting
-Linting as you type is ran through /flycheck [0]/. Installing the spacemacs /syntax-checking layer [1]/ will install flycheck as a dependency.
+Linting as you type is ran through /flycheck [0]/. Installing the spacemacs /syntax-checking layer [1]/ will install flycheck as a dependency. Flycheck shows flow error only if flow mode is activated
 
 [0] http://www.flycheck.org/en/latest/
 
 [1] http://spacemacs.org/layers/+checkers/syntax-checking/README.html
 
 ** Basic eldoc type at pos (experimental)
-Very basic eldoc [0] showing type at position. Still needs a lot of work, it currently only shows uncolored type under cursor position. I've only activated it for react mode. But I need to only activate it for files that start with the flow comment because it's causing problems on none flow files (obviously). /It's only activated on react-mode/ for now.
+Very basic eldoc [0] showing type at position. Only works when flow-mode is activated. It asks for flow a type annotation of the element under the cursor, parses it and colors it, before messing it to the mini buffer.
+
+I originally tried to do this using regexes but the results were unsatisfactory for my taste, regexes are hard ! The current type syntax coloring happens by lexing flow's response, building an AST from it, and then constructing a colored type annotation from that AST. It's my first time coding a recursive descent parser and my first time coding a non trivial algorithm in lisp so forgive me if some of the output is wrong. Please notify me and I'll look into it and provide a fix, I'll of course accept PR's :) Finally, the lexer and parser are both tested but the coloring algorithm isn't (as of right now)
 
 [0] https://www.emacswiki.org/emacs/c-eldoc.el
 
@@ -93,13 +98,14 @@ emacs flow.js    # open flow.js with emacs
 
 | action                                | screenshot                                 |
 |---------------------------------------+--------------------------------------------|
-| user defined attribute autocomplete   | [[./screenshots/flow-autocomplete-attr.png]]   |
-| js std autocomplete                   | [[./screenshots/flow-autocomplete-js-std.png]] |
-| type linting                          | [[./screenshots/flow-lint-typing.png]]         |
-| type at position                      | [[./screenshots/flow-type-at-pos.png]]         |
-| type of std function                  | [[./screenshots/flow-type-at-pos-js-std.png]]  |
+| User defined attribute autocomplete   | [[./screenshots/flow-autocomplete-attr.png]]   |
+| Js std autocomplete                   | [[./screenshots/flow-autocomplete-js-std.png]] |
+| Type linting                          | [[./screenshots/flow-lint-typing.png]]         |
+| Type at position                      | [[./screenshots/flow-type-at-pos.png]]         |
+| Type of std function                  | [[./screenshots/flow-type-at-pos-js-std.png]]  |
 | Flow status on project (experimental) | [[./screenshots/flow-status-proto.png]]        |
-| basic eldoc (experimental)            | [[./screenshots/flow-eldoc.png]]               |
+| Colored eldoc                         | [[./screenshots/flow-eldoc-simple.png]]        |
+| Colored eldoc for React variable      | [[./screenshots/flow-eldoc-complex.png]]       |
 
 
 
