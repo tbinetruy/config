@@ -132,7 +132,7 @@
                             :line (cdr (assoc 'line err))
                             :column (cdr (assoc 'start err-full))
                             :level 'error
-                            :message (format "%s" err-full)
+                            :message (format "%s" (car err-full))
                             :filename (f-relative
                                       (cdr (assoc 'path err))
                                       (f-dirname (file-truename
