@@ -125,7 +125,7 @@
             (mapcar #'(lambda (errp)
                         (let ((err (cadr (assoc 'message errp)))
                               (err-full (mapcar #'(lambda (e)
-                                                    (cdr (assoc 'descr e)))
+                                                    (alist-get 'descr e))
                                                 (cdr (assoc 'message errp))))
                               (err2 (cadr (cdr (assoc 'message errp)))))
                           (flycheck-error-new
@@ -246,9 +246,10 @@
    (interactive)
    (let ((file (buffer-file-name))
          (line (line-number-at-pos))
-    (col (current-column))
-    (buffer-content (buffer-string))
-    (buffer (current-buffer)))
+         (col (current-column))
+         (buffer-content (buffer-string))
+         (buffer (current-buffer)))
+     (message "%s" buffer-content)
      (popup-tip
       (replace-regexp-in-string "\\(, {\\)\\|\\(: {\\)" "\\& \n"
       (format "%s"
@@ -276,7 +277,7 @@
   (defun flow-type-at-pos ()
    "show type"
    (interactive)
-   (let ((file (buffer-file-name))
+   (let* ((file (buffer-file-name))
          (line (line-number-at-pos))
          (col (current-column))
          (buffer-content (buffer-string))
@@ -449,7 +450,11 @@
   (defun js2--eldoc-via-tern ()
     (message (flow-type-at-pos-eldoc)))
 
-   (add-hook 'react-mode-hook
+   (add-hook 'rjsx-mode-hook
+             (lambda ()
+               (eldoc-mode)
+               (setq-local eldoc-documentation-function #'js2--eldoc-via-tern)))
+   (add-hook 'js2-mode-hook
              (lambda ()
                (setq-local eldoc-documentation-function #'js2--eldoc-via-tern)))
 
