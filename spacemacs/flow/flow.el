@@ -30,6 +30,7 @@
 (require 'generic-x) ;; we need this
 (require 'async)
 (load-file "~/config/spacemacs/flow/flow-eldoc.el")
+(load-file "~/config/spacemacs/flow/flow-status.el")
 (defun flowing-mode-config ()
   "For use in `foo-mode-hook'."
   ;;(define-key map (kbd [tab]) 'evil-toggle-fold)
@@ -55,61 +56,7 @@
     (print (car list))
     (setq list (cdr list))))
 
-(defun print-flow-status-error (e)
-  (mapcar
-   (lambda (err)
-             (insert (format "\n*** File error "))
-             (insert "\n\n\n")
-             (insert "              ")
-             (mapcar
-              (lambda (y)
-                (if (equal (format "%s" (cdr (assoc 'type y))) "Blame")
-                    (insert (propertize (format "%s " (cdr (assoc 'descr y))) 'font-lock-face '(:foreground "green")))
-                    (insert (propertize (format "%s " (cdr (assoc 'descr y))) 'font-lock-face '(:foreground "orange")))
-                    ))
-              (cdr (assoc 'message err)))
-             (insert "\n\n")
-             (mapcar
-              (lambda (y)
-                (if (equal (format "%s" (cdr (assoc 'type y))) "Blame")
-                  (insert (propertize (format "        error start: %s (%s)\n" (cdr (assoc 'context y)) (cdr (assoc 'descr y))) 'font-lock-face '(:foreground "white")))))
-              (cdr (assoc 'message err)))
-             (insert "\n\n")
-             (mapcar
-              (lambda (y)
-                (if (equal (format "%s" (cdr (assoc 'type y))) "Blame")
-                    ((lambda ()
-                      (insert (propertize (format "    path: \n        %s\n         "
-                                            (cdr (assoc 'source (cdr (assoc 'loc y))))) 'font-lock-face '(:foreground "grey")))
-                      (insert (propertize (format "(start: l. %s, "
-                                                  (cdr (assoc 'line (cdr (assoc 'start (cdr (assoc 'loc y))))))) 'font-lock-face '(:foreground "grey")))
-                      (insert (propertize (format "c. %s; "
-                                                  (cdr (assoc 'column (cdr (assoc 'start (cdr (assoc 'loc y))))))) 'font-lock-face '(:foreground "grey")))
-                    (insert (propertize (format "end: l. %s, "
-                                                (cdr (assoc 'line (cdr (assoc 'end (cdr (assoc 'loc y))))))) 'font-lock-face '(:foreground "grey")))
-                    (insert (propertize (format "c. %s)\n"
-                                                (cdr (assoc 'column (cdr (assoc 'end (cdr (assoc 'loc y))))))) 'font-lock-face '(:foreground "grey")))))))
-              (cdr (assoc 'message err)))
-            (insert "\n"))
-   e))
   ;;(mapc (lambda (m) (format "hello %s" m)) (assoc 'message e)))
-
-;; create new window and show flow status in it
-(defun create-flow-status-window (json)
-    (interactive)
-    ;;(split-window-right)
-    (let ((file (buffer-file-name))
-          (region (string-of-region))
-          (buffer (current-buffer)))
-      (switch-to-buffer-other-window "*Flowing status*")
-      (erase-buffer)
-      (insert "* flow status window \n\n\n")
-      (insert "** Errors (tab over section to toggle): \n")
-      (print-flow-status-error (cdr (assoc 'errors
-                      (json-read-from-string
-                        json)))))
-    (outline-mode)
-    (local-set-key (kbd "TAB") 'evil-toggle-fold))
 
 
 (defun init-flowjs ()
@@ -225,14 +172,6 @@
 
     (interactive)
     (shell-command (format "%s stop" flow_binary))
-  )
-
-  (defun flow-status ()
-    "Initialize flow"
-    (interactive)
-    (create-flow-status-window
-    (shell-command-to-string
-     (format "npm run -s flow -- status --json")))
   )
 
   (spacemacs/set-leader-keys-for-major-mode 'react-mode "ff" 'flow-status)
