@@ -1,3 +1,4 @@
+
 ;; -*- mode: emacs-lisp -*-
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
@@ -30,48 +31,45 @@ values."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(php
-     octave
-     w3m ; https://github.com/venmos/w3m-layer
-     csv
-     gnus
-     javascript
-     dash
-     html
-     shell
-     yaml
-     python
-     markdown
-     restclient
-     react
-     typescript
-     javascript
-     semantic
-     ;; ----------------------------------------------------------------
-     ;; Example of useful layers you may want to use right away.
-     ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
-     ;; <M-m f e R> (Emacs style) to install them.
-     ;; ----------------------------------------------------------------
-     helm
+   '(
      auto-completion
-     ; better-defaults
+     (c-c++ :variables c-c++-enable-clang-support t)
+     clojure
+     cscope
+     csharp
+     csv
+     dash
+     docker
      emacs-lisp
      git
-     ;; markdown
+     github
+     gnus
+     helm
+     html
+     imenu-list
+     javascript
+     markdown
+     octave
      (org :variables org-enable-github-support t)
-     (c-c++ :variables c-c++-enable-clang-support t)
-     ;; (shell :variables
-     ;;        shell-default-height 30
-     ;;        shell-default-position 'bottom)
+     pdf
+     php
+     python
+     react
+     restclient
+     semantic
+     shell
+     shell-script
      spell-checking
      syntax-checking
-     ;; version-control
+     typescript
+     w3m ; https://github.com/venmos/w3m-layer
+     yaml
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(company-flow dtrt-indent rjsx-mode qml-mode ox-gfm yasnippet-snippets bbdb)
+   dotspacemacs-additional-packages '(company-flow dtrt-indent rjsx-mode qml-mode ox-gfm yasnippet-snippets bbdb prettier-js indium arch-packer)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -344,12 +342,26 @@ you should place your code here."
   (spacemacs/set-leader-keys "w|" 'evil-window-set-width)
   (spacemacs/set-leader-keys "w_" 'evil-window-set-height)
 
+  ;; buffers
+  (spacemacs/set-leader-keys "bw" 'spacemacs/goto-buffer-workspace)
+  (spacemacs/set-leader-keys "bW" 'read-only-mode)
+
   ;; ehsell
   (spacemacs/set-leader-keys-for-major-mode 'eshell-mode "h" 'helm-eshell-history)
 
+  ;; dired
+  ;(spacemacs/set-leader-keys "ad" 'projectile-dired)
+  ;(spacemacs/set-leader-keys "aD" 'helm-projectile-find-dir)
+
+  ;; Apps
+  (spacemacs/set-leader-keys "ak" 'helm-show-kill-ring)
+  (spacemacs/set-leader-keys "aK" 'paradox-list-packages)
+  (spacemacs/set-leader-keys "ap" 'proced)
+  (spacemacs/set-leader-keys "aP" 'list-processes)
 
   ;; helm imenu
   (spacemacs/set-leader-keys "so" 'helm-imenu)
+  (message "hello")
 
   ;; org artist mode
   (add-hook 'artist-mode-hook
@@ -357,10 +369,9 @@ you should place your code here."
               (local-set-key (kbd "<f1>") 'org-mode)
               (local-set-key (kbd "<f2>") 'artist-select-op-pen-line) ; f2 = pen mode
               (local-set-key (kbd "<f3>") 'artist-select-op-line)     ; f3 = line
-              (local-set-key (kbd "<f4>") 'artist-select-op-square)   ; f4 = rectangle
+              (local-set-key (kbd "<f4>") 'artist-select-op-rectangle)   ; f4 = rectangle
               (local-set-key (kbd "<f5>") 'artist-select-op-ellipse)  ; f5 = ellipse
-              (local-set-key (kbd "C-z") 'undo)
-              ))
+              (local-set-key (kbd "C-z") 'undo)))
 
   ;; add github support: https://github.com/syl20bnr/spacemacs/tree/master/layers/%2Bemacs/org#github-support
 
@@ -382,6 +393,8 @@ you should place your code here."
      'org-babel-load-languages
      '(
        (C . t)
+       (ruby . t)
+       (lilypond . t)
        (emacs-lisp . t)
        (python .t)
        (ditaa .t)
@@ -415,8 +428,8 @@ you should place your code here."
     (shell-command "rm ./*.html"))
 
   (spacemacs/set-leader-keys-for-major-mode 'org-mode "eh" 'export-princexml)
-  (load-file "~/config/spacemacs/flow/flow.el")
-  (init-flowjs)
+  ;(load-file "~/config/spacemacs/flow/flow.el")
+  ;(init-flowjs)
 
 
   (defun nova/org-pdf-view ()
@@ -467,7 +480,38 @@ you should place your code here."
 
   (add-to-list 'load-path "~/.emacs.d/lisp/")
   (autoload 'gmail2bbdb-import-file "gmail2bbdb" nil t nil)
-  )
+
+  ;; multiple cursors
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
+  ;; prettier
+  (require 'prettier-js)
+  (add-hook 'js2-mode-hook 'prettier-js-mode)
+  (add-hook 'rjsx-mode-hook 'prettier-js-mode)
+  (add-hook 'typescript-mode-hook 'prettier-js-mode)
+  (add-hook 'typescript-tsx-mode-hook 'prettier-js-mode)
+
+  (setq prettier-js-args '(
+                           "--trailing-comma" "all"
+                           "--bracket-spacing" "false"
+                           "--jsx-bracket-same-line"
+                           ))
+
+  (add-hook 'typescript-tsx-mode-hook (lambda ()
+                                        (setq-local web-mode-code-indent-offset 2)
+                                        (setq-local web-mode-markup-indent-offset 2)))
+
+  ;; arch-packer
+  (setq arch-packer-default-command "pacaur")
+
+  (spacemacs/set-leader-keys "aas" 'arch-packer-search-package)
+  (spacemacs/set-leader-keys "aai" 'arch-packer-install-package)
+  (spacemacs/set-leader-keys "aal" 'arch-packer-list-packages)
+  (spacemacs/set-leader-keys "aam" 'arch-packer-package-menu-mode)
+  (spacemacs/set-leader-keys "aaS" 'arch-packer-search-mode)
+)
 
 (load-library "find-lisp")
 ;; Do not write anything past this comment. This is where Emacs will
@@ -539,12 +583,12 @@ This function is called at the very end of Spacemacs initialization."
    (mapcar
     (quote abbreviate-file-name)
     (split-string
-     (shell-command-to-string "find ~/code/nova-props ~/code/nova-admin -name '*.org'")
+     (shell-command-to-string "find ~/code/nova-props ~/code/nova-admin ~/code/nova-website -name '*.org'")
      "
 ")))
  '(package-selected-packages
    (quote
-    (bbdb restclient-helm ob-restclient ob-http company-restclient restclient know-your-http-well helm-w3m w3m yasnippet-snippets csv-mode ox-twbs ox-gfm org-mime ghub let-alist qml-mode disaster company-c-headers cmake-mode clang-format zeal-at-point helm-dash rjsx-mode pdf-tools tablist flyspell-correct-helm flyspell-correct auto-dictionary stickyfunc-enhance srefactor dtrt-indent helm-company helm-c-yasnippet fuzzy flycheck-pos-tip pos-tip flycheck company-web web-completion-data company-tern company-statistics company-flow company-anaconda company auto-yasnippet ac-ispell auto-complete tern web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc coffee-mode xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode yaml-mode yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic mmm-mode markdown-toc markdown-mode gh-md smeargle orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-download magit-gitflow htmlize helm-gitignore gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit magit-popup git-commit with-editor ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async))))
+    (magithub ghub+ apiwrap magit-gh-pulls github-search github-clone git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gist gh marshal logito pcache ht diff-hl browse-at-remote restclient-helm ob-restclient ob-http company-restclient restclient know-your-http-well helm-w3m w3m yasnippet-snippets csv-mode ox-twbs ox-gfm org-mime ghub let-alist qml-mode disaster company-c-headers cmake-mode clang-format zeal-at-point helm-dash rjsx-mode pdf-tools tablist flyspell-correct-helm flyspell-correct auto-dictionary stickyfunc-enhance srefactor dtrt-indent helm-company helm-c-yasnippet fuzzy flycheck-pos-tip pos-tip flycheck company-web web-completion-data company-tern company-statistics company-flow company-anaconda company auto-yasnippet ac-ispell auto-complete tern web-beautify livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor yasnippet multiple-cursors js2-mode js-doc coffee-mode xterm-color shell-pop multi-term eshell-z eshell-prompt-extras esh-help web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode helm-css-scss haml-mode emmet-mode yaml-mode yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode dash-functional helm-pydoc cython-mode anaconda-mode pythonic mmm-mode markdown-toc markdown-mode gh-md smeargle orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-download magit-gitflow htmlize helm-gitignore gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link evil-magit magit magit-popup git-commit with-editor ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -591,3 +635,19 @@ This function is called at the very end of Spacemacs initialization."
 (setq user-full-name "Thomas Binetruy")
 
 
+;; Reload org file list
+
+(defun reload-agenda-file-list ()
+  (interactive)
+  (custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+  '(org-agenda-files
+    (mapcar
+     (quote abbreviate-file-name)
+     (split-string
+      (shell-command-to-string "find ~/code/nova-props ~/code/nova-admin -name '*.org' -not -name '.#*.org'")
+      "
+")))))

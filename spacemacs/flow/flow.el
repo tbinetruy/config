@@ -88,25 +88,25 @@
                             :checker checker)))
                     (cdr (assoc 'errors o)))))))
 
-  (flycheck-define-checker javascript-flow
-    "Static type checking using Flow."
-    ;; :command ("npm run -s flow -- " "--json")
-    :command (
-              ;; doesn't work with 2 commented lines bellow for some reason
-              ;;"npm" "run"
-              "flow"
-              ;;"--"
-              "check-contents"
-              "--json"
-              "--from" "emacs"
-              source-original)
-    :error-parser flycheck-parse-flow
-              ;"check-contents" "--json" "--from" "emacs" source-inplace)
-    :standard-input t
-    :modes (react-mode js2-mode rjsx-mode)
-    :next-checkers ((error . javascript-eslint))
-    )
-  (add-to-list 'flycheck-checkers 'javascript-flow)
+  ;(flycheck-define-checker javascript-flow
+  ;  "Static type checking using Flow."
+  ;  ;; :command ("npm run -s flow -- " "--json")
+  ;  :command (
+  ;            ;; doesn't work with 2 commented lines bellow for some reason
+  ;            ;;"npm" "run"
+  ;            "flow"
+  ;            ;;"--"
+  ;            "check-contents"
+  ;            "--json"
+  ;            "--from" "emacs"
+  ;            source-original)
+  ;  :error-parser flycheck-parse-flow
+  ;            ;"check-contents" "--json" "--from" "emacs" source-inplace)
+  ;  :standard-input t
+  ;  :modes (react-mode js2-mode rjsx-mode)
+  ;  :next-checkers ((error . javascript-eslint))
+  ;  )
+  ;(add-to-list 'flycheck-checkers 'javascript-flow)
 
   ;; https://github.com/syl20bnr/spacemacs/blob/bd7ef98e4c35fd87538dd2a81356cc83f5fd02f3/layers/%2Bframeworks/react/funcs.el#L30
   (defun spacemacs//react-use-flow-from-node-modules ()
