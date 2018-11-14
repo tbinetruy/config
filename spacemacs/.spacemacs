@@ -431,6 +431,13 @@ you should place your code here."
   ;(load-file "~/config/spacemacs/flow/flow.el")
   ;(init-flowjs)
 
+  (load-file "~/config/spacemacs/spark-shell/main.el")
+  (setq spark-shell//bin-location"./kaggle/spark/bin/spark-shell")
+  (setq spark-shell//username "binetruy")
+  (setq spark-shell//hostname "c133-07")
+  (spacemacs/set-leader-keys-for-major-mode 'scala-mode "ks" 'spark-shell//spawn)
+  (spacemacs/set-leader-keys-for-major-mode 'scala-mode "kb" 'spark-shell//send-buffer)
+
 
   (defun nova/org-pdf-view ()
     "export to html and post process with princexml"
