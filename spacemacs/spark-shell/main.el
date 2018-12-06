@@ -1,6 +1,6 @@
-(defcustom spark-shell//username nil "login used when connection over ssh")
+(defcustom spark-shell//username nil "login used when connecting over ssh")
 (defcustom spark-shell//hostname nil "hostname used when connecting over ssh")
-(defcustom spark-shell//bin-location nil "hostname used when connecting over ssh")
+(defcustom spark-shell//bin-location nil "spark-shell binary location")
 (defcustom spark-shell//buffer-name "**spark-shell**" "name of spark-shell buffer")
 
 (defun spark-shell//spawn ()
